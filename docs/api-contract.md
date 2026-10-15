@@ -57,7 +57,7 @@ TypeScript definitions for every shape below live in `src/models/`.
   "fromAccountNumber": "1000001234",
   "toAccountNumber": "1000005678",
   "timestamp": "2026-10-07T14:30:00Z",
-  "reference": "Bought Food"
+  "note": "Bought Food"
 }
 ```
 | `type` | `fromAccountNumber` | `toAccountNumber` |
@@ -68,7 +68,7 @@ TypeScript definitions for every shape below live in `src/models/`.
 
 - `amountCents` is always positive. Direction is determined by the account fields.
 - For transfers, the UI shows "incoming" or "outgoing" by comparing the account numbers to the logged-in user's account.
-- reference is a nullable field which should only be assigned during transfers
+- note is a nullable field which should only be assigned during transfers
 ---
 
 ## 3. Endpoints
