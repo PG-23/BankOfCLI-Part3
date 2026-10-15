@@ -1,0 +1,22 @@
+<div class="shell">
+  <app-navbar
+  [menuOpen]="sidebarOpen()"
+  [userName]="userName()"
+  [userId]="userId()"
+  [userEmail]="userEmail()"
+  (menuToggled)="toggleSidebar()"
+  (logoutRequested)="logout()"
+/>
+
+  @if (sidebarOpen()) {
+    <button class="shell__scrim" type="button" aria-label="Close menu" (click)="closeSidebar()"></button>
+  }
+
+  <app-sidebar [open]="sidebarOpen()" [userName]="userName()" (closeRequested)="closeSidebar()" />
+
+  <main class="shell__main">
+    <router-outlet />
+  </main>
+
+  <app-toast />
+</div>

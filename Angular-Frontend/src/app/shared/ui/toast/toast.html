@@ -1,0 +1,15 @@
+<div class="ui-toasts" aria-live="polite" aria-relevant="additions">
+  @for (toast of toasts.messages(); track toast.id) {
+    <article class="ui-toast" [attr.data-tone]="toast.tone">
+      <div>
+        <p class="ui-toast__title">{{ toast.title }}</p>
+        @if (toast.detail) {
+          <p class="ui-toast__detail">{{ toast.detail }}</p>
+        }
+      </div>
+      <button class="ui-toast__close" type="button" (click)="toasts.dismiss(toast.id)" aria-label="Dismiss">
+        ✕
+      </button>
+    </article>
+  }
+</div>

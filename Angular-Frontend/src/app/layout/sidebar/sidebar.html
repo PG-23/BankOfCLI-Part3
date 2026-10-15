@@ -1,0 +1,37 @@
+<aside
+  id="app-sidebar"
+  class="sidebar"
+  [class.sidebar--open]="open()"
+  [attr.inert]="open() ? null : ''"
+  aria-label="Main"
+>
+  <div class="sidebar__head">
+    <span class="sidebar__avatar" aria-hidden="true">{{ initial() }}</span>
+    <span class="sidebar__name">{{ userName() }}</span>
+    <button class="sidebar__close" type="button" aria-label="Close menu" (click)="closeRequested.emit()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <nav class="sidebar__nav">
+    @for (link of links(); track link.path) {
+      @if (link.enabled) {
+        <a
+          class="sidebar__link"
+          [routerLink]="link.path"
+          routerLinkActive="sidebar__link--active"
+          (click)="closeRequested.emit()"
+        >
+          <img [src]="link.icon" alt="" width="32" height="32" />
+          <span>{{ link.label }}</span>
+        </a>
+      } @else {
+        <span class="sidebar__link sidebar__link--soon" aria-disabled="true">
+          <img [src]="link.icon" alt="" width="32" height="32" />
+          <span>{{ link.label }}</span>
+          <small>soon</small>
+        </span>
+      }
+    }
+  </nav>
+</aside>
