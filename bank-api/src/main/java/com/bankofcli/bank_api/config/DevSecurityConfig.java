@@ -30,6 +30,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration 
 @Profile("dev")
+// TODO: Temporary. Remove or restrict once JWT SecurityConfig is merged (see issue #___)
 public class DevSecurityConfig {
     public static final String DEV_USERNAME = "testuser";
 
