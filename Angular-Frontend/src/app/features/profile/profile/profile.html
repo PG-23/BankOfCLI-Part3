@@ -1,0 +1,78 @@
+<section class="profile">
+  <div class="profile__card">
+    <h1 class="profile__title">Edit profile:</h1>
+
+    <div class="profile__who">
+      <svg class="profile__avatar" viewBox="0 0 100 100" role="img" aria-label="Profile picture placeholder">
+        <circle cx="50" cy="50" r="46" fill="#fff" stroke="currentColor" stroke-width="8" />
+        <circle cx="50" cy="38" r="13" fill="currentColor" />
+        <path d="M24 78c3-14 14-21 26-21s23 7 26 21c-7 7-16 11-26 11s-19-4-26-11z" fill="currentColor" />
+      </svg>
+      <div class="profile__name">
+        <strong>{{ fullName() }}</strong>
+        <span>{{ user()?.id }}</span>
+      </div>
+    </div>
+
+    @if (feedback(); as fb) {
+      <div class="profile__feedback"
+           [class.profile__feedback--success]="fb.type === 'success'"
+           [class.profile__feedback--error]="fb.type === 'error'"
+           role="alert">
+        {{ fb.text }}
+      </div>
+    }
+
+    <form class="profile__form" [formGroup]="form" (ngSubmit)="save()" novalidate>
+
+      <label class="field">
+        <span>First Name *</span>
+        <input type="text" formControlName="firstName" placeholder="First Name" autocomplete="given-name" />
+        @if (invalid('firstName')) { <small class="field__error">First name is required.</small> }
+      </label>
+
+      <label class="field">
+        <span>Last Name *</span>
+        <input type="text" formControlName="lastName" placeholder="Last Name" autocomplete="family-name" />
+        @if (invalid('lastName')) { <small class="field__error">Last name is required.</small> }
+      </label>
+
+      <label class="field">
+        <span>Email *</span>
+        <input type="email" formControlName="email" placeholder="example@gmail.com" autocomplete="email" />
+        @if (invalid('email')) { <small class="field__error">Enter a valid email address.</small> }
+      </label>
+
+      <label class="field">
+        <span>Confirm Email *</span>
+        <input type="email" formControlName="confirmEmail" placeholder="example@gmail.com" autocomplete="off" />
+        @if (invalid('confirmEmail')) {
+          <small class="field__error">Enter a valid email address.</small>
+        } @else if (form.controls.confirmEmail.touched && form.hasError('emailMismatch')) {
+          <small class="field__error">Emails don't match.</small>
+        }
+      </label>
+
+      <fieldset class="field gender">
+        <legend>Gender</legend>
+        <div class="gender__options">
+          @for (g of genders; track g.value) {
+            <label class="pill">
+              <input type="radio" formControlName="gender" [value]="g.value" />
+              <span>{{ g.label }}</span>
+            </label>
+          }
+        </div>
+      </fieldset>
+
+      <label class="field">
+        <span>ID</span>
+        <input type="text" [value]="user()?.id ?? ''" readonly aria-readonly="true" class="field__readonly" />
+      </label>
+
+      <button type="submit" class="save" [disabled]="saving()">
+        {{ saving() ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </form>
+  </div>
+</section>

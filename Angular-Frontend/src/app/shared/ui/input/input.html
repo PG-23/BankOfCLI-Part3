@@ -1,0 +1,28 @@
+<label class="ui-field" [attr.for]="id()">
+  @if (label()) {
+    <span class="ui-field__label">
+      {{ label() }}
+      @if (required()) {
+        <span class="ui-field__req" aria-hidden="true">*</span>
+      }
+    </span>
+  }
+  <input
+    class="ui-field__control"
+    [class.ui-field__control--invalid]="!!error()"
+    [id]="id()"
+    [attr.type]="type()"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [required]="required()"
+    [ngModel]="value()"
+    (ngModelChange)="value.set($event)"
+    [attr.aria-invalid]="!!error()"
+    [attr.aria-describedby]="error() ? id() + '-error' : hint() ? id() + '-hint' : null"
+  />
+  @if (error()) {
+    <span class="ui-field__error" [id]="id() + '-error'">{{ error() }}</span>
+  } @else if (hint()) {
+    <span class="ui-field__hint" [id]="id() + '-hint'">{{ hint() }}</span>
+  }
+</label>

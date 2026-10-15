@@ -1,0 +1,19 @@
+<button
+  class="ui-btn"
+  [class.ui-btn--primary]="variant() === 'primary'"
+  [class.ui-btn--secondary]="variant() === 'secondary'"
+  [class.ui-btn--ghost]="variant() === 'ghost'"
+  [class.ui-btn--danger]="variant() === 'danger'"
+  [class.ui-btn--sm]="size() === 'sm'"
+  [class.ui-btn--md]="size() === 'md'"
+  [class.ui-btn--lg]="size() === 'lg'"
+  [class.ui-btn--full]="fullWidth()"
+  [class.ui-btn--loading]="loading()"
+  [attr.type]="type()"
+  [disabled]="disabled() || loading()"
+>
+  @if (loading()) {
+    <app-spinner size="sm" [label]="'Loading'" />
+  }
+  <span class="ui-btn__label"><ng-content /></span>
+</button>
