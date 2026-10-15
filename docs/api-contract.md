@@ -222,10 +222,9 @@ Mock implementation: `getTransactionsFromId(accountNumber, type, page)` in `src/
 |---|---|---|---|
 | `type` | `TransactionType` \| `"all"` | `"all"` | Optional filter by transaction type |
 | `page` | number | `0` | Zero-based page index |
+| `size` | number | `5` | How many entries should be returned per page |
 
-Page size is can be set to an arbitrary number but by default is set to 5 pages.
-
-Example: `GET /transactions?type=transfer&page=1`
+Example: `GET /transactions?type=transfer&page=1&size=3`
 
 **200 OK** — `PaginatedTransactions`
 ```json
