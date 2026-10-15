@@ -56,7 +56,8 @@ TypeScript definitions for every shape below live in `src/models/`.
   "amountCents": 5000,
   "fromAccountNumber": "1000001234",
   "toAccountNumber": "1000005678",
-  "timestamp": "2026-10-07T14:30:00Z"
+  "timestamp": "2026-10-07T14:30:00Z",
+  "note": "Bought Food"
 }
 ```
 | `type` | `fromAccountNumber` | `toAccountNumber` |
@@ -67,7 +68,7 @@ TypeScript definitions for every shape below live in `src/models/`.
 
 - `amountCents` is always positive. Direction is determined by the account fields.
 - For transfers, the UI shows "incoming" or "outgoing" by comparing the account numbers to the logged-in user's account.
-
+- note is a nullable field which should only be assigned during transfers
 ---
 
 ## 3. Endpoints
@@ -79,7 +80,9 @@ TypeScript definitions for every shape below live in `src/models/`.
 | POST | `/auth/register` | No | `RegisterRequest` | `201` `AuthResponse` |
 | POST | `/auth/login` | No | `LoginRequest` | `200` `AuthResponse` |
 | GET | `/accounts/me` | Yes | — | `200` `Account` |
+| GET | `/accounts/{accountNumber}` | Yes | — | `200` `AccountLookup` |
 | GET | `/transactions` | Yes | query params | `200` `PaginatedTransactions` |
+| GET | `/transaction/activity` | YES | query params | `200` `Transaction` |
 | POST | `/transactions/deposit` | Yes | `DepositRequest` | `201` `TransactionResponse` |
 | POST | `/transactions/withdraw` | Yes | `WithdrawRequest` | `201` `TransactionResponse` |
 | POST | `/transactions/transfer` | Yes | `TransferRequest` | `201` `TransactionResponse` |
@@ -177,6 +180,37 @@ Returns the logged-in user's account.
 
 ---
 
+### GET /accounts/{accountNumber}
+
+Accepts an account number and returns a user's first name and last name
+
+Mock implementation: `lookupRecipient(accountNumber, fromAccountNumber)` in `src/services/transferService.ts`.
+
+**Query parameters**
+| Param | Type | Default | Description |
+|---|---|---|---|
+| `accountNumber` | String | `null` | The account number we are using to look up |
+| `fromAccountNumber` | String | `null` | The user's account number to ensure we are not self transferring. Likely shouldn't be needed during integration |
+
+Example: `GET /accounts/32`
+
+**200 OK**
+```json
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "accountNumber": 32
+}
+```
+**Errors**
+| Status | Code | When |
+|---|---|---|
+| 400 | `SELF TRANSFER` | Attempted transfer to self | 
+| 401 | `UNAUTHORIZED` | Missing or invalid token |
+| 404 | `ACCOUNT NOT EXIST` | Queried account does not exist |
+
+---
+
 ### GET /transactions
 
 Returns a page of transactions involving the logged-in user's account (as sender or recipient), **newest first**.
@@ -188,10 +222,9 @@ Mock implementation: `getTransactionsFromId(accountNumber, type, page)` in `src/
 |---|---|---|---|
 | `type` | `TransactionType` \| `"all"` | `"all"` | Optional filter by transaction type |
 | `page` | number | `0` | Zero-based page index |
+| `size` | number | `5` | How many entries should be returned per page |
 
-Page size is fixed at **3** transactions.
-
-Example: `GET /transactions?type=transfer&page=1`
+Example: `GET /transactions?type=transfer&page=1&size=3`
 
 **200 OK** — `PaginatedTransactions`
 ```json
@@ -234,6 +267,42 @@ Example: `GET /transactions?type=transfer&page=1`
 | 401 | `UNAUTHORIZED` | Missing or invalid token |
 
 ---
+
+### GET /transaction/activity
+
+Returns transaction activity based on a certain time frame for use inside of the activity graph
+
+**Query parameters**
+| Param | Type | Default | Description |
+|---|---|---|---|
+| `since` | String | `null`  | From present to what time should the history be fetched |
+
+Example: `GET /transactions?since=2026-10-07T12:05:00Z`
+
+Example: `GET /transactions?type=transfer&page=1`
+
+**200 OK** — `PaginatedTransactions`
+```json
+{
+  "transactions": [
+    {
+      "id": "TXN-20261007-000021",
+      "type": "withdrawal",
+      "amountCents": 2150,
+      "fromAccountNumber": "1000001234",
+      "toAccountNumber": null,
+      "timestamp": "2026-10-07T12:10:00Z"
+    }
+  ]
+}
+```
+
+**Errors**
+| Status | Code | When |
+|---|---|---|
+| 401 | `UNAUTHORIZED` | Missing or invalid token |
+
+--
 
 ### POST /transactions/deposit
 

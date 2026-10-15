@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bankofcli
+    username: bankofcli
+    password: bankofcli
+  jpa:
+    hibernate:
+      ddl-auto: update   # switch to "validate" if you adopt Flyway
+    open-in-view: false
+server:
+  port: 8080
