@@ -1,0 +1,6 @@
+[
+  {"id": "u_1", "firstName": "Alice", "lastName": "Smith", "username": "asmith1234", "email": "alice@bank.com", "password": "password1"},
+  {"id": "u_2", "firstName": "Bob", "lastName": "Jones", "username": "bjones5678", "email": "bob@bank.com", "password": "password1"},
+  {"id": "u_3", "firstName": "Carol", "lastName": "Nguyen", "username": "cnguyen4417", "email": "carol@bank.com", "password": "password1"},
+  {"id": "u_4", "firstName": "Dan", "lastName": "Patel", "username": "dpatel9023", "email": "dan@bank.com", "password": "password1"}
+]

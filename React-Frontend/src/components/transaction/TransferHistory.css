@@ -1,0 +1,137 @@
+/* Styling for not the table */
+.under-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0px;
+    justify-self: start;
+    width: 100%;
+}
+
+/* Styling for the container that holds the whole TransferHistory component */
+
+.transaction-history {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    align-items: stretch;
+}
+
+/************************************
+*           Table Format            *
+************************************/
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.empty-row td {
+    color: transparent;
+    border-bottom: 1px solid transparent;
+}
+
+th {
+    padding-bottom: 10px;
+    border-bottom: 2px;
+}
+
+tbody > tr {
+    padding: 3px 0px 5px 0px;
+    border-bottom: 1px solid var(--color-border);
+    width: 100%;
+}
+
+/* Give the transaction name/note more width than anything else */
+.loading-cell {
+    width: 100%;
+    padding: 2px 0;
+}
+
+td:first-child,
+th:first-child {
+    text-align: left;
+    width: 50%;
+}
+
+/* Give date and amount some width */
+td:not(:first-child, :last-child),
+th:not(:first-child, :last-child) {
+    text-align: left;
+    width: 20%;
+}
+
+/* Let the balance have any left over amount */
+td:last-child,
+th:last-child {
+    text-align: right;
+    width: 10%;
+}
+
+/*************************************
+*            Row Elements            *
+*************************************/
+
+/* Quick Definition, maybe redundant */
+.green {
+    color: green;
+}
+
+.red {
+    color: red;
+}
+
+/* For the icons indicating transfer/deposit/withdrawal */
+.icon {
+    margin-right: 8px;
+    vertical-align: middle;
+    height: 18px;
+    width: 18px;
+}
+
+/*************************************
+*             Pagination             *
+*************************************/
+
+.pagination {
+    display: grid;
+    grid-template-columns: 90px repeat(5, 40px) 90px; /* prev | 5 pages | next */
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto 0;
+    width: max-content;
+}
+
+.pagination button {
+    margin: 0;
+    padding: 5px 0;
+    min-width: 0;
+}
+
+.pagination .nav {
+    width: 90px;
+}
+
+.pagination .page {
+    width: 40px;
+}
+
+.active {
+    background-color: var(--color-surface);
+    color: var(--color-text);
+}
+
+.current {
+    font-weight: bold;
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.invisible {
+    visibility: hidden; /* keeps space reserved */
+}

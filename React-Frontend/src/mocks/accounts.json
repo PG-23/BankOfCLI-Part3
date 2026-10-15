@@ -1,0 +1,6 @@
+[
+  {"accountNumber": "1000001234", "balanceCents": 458351, "userId": "u_1"},
+  {"accountNumber": "1000005678", "balanceCents": 345926, "userId": "u_2"},
+  {"accountNumber": "1000004417", "balanceCents": 484711, "userId": "u_3"},
+  {"accountNumber": "1000009023", "balanceCents": 0, "userId": "u_4"}
+]
