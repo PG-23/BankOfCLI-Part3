@@ -1,1 +1,11 @@
-spring.application.name=bank-api
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bankofcli
+    username: bank
+    password: bank
+  jpa:
+    hibernate:
+      ddl-auto: update   # switch to "validate" if you adopt Flyway
+    open-in-view: false
+server:
+  port: 8080
