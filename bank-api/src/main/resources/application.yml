@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/bankofcli
-    username: bank
-    password: bank
+    username: bankofcli
+    password: bankofcli
   jpa:
     hibernate:
       ddl-auto: update   # switch to "validate" if you adopt Flyway
