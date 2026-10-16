@@ -12,25 +12,40 @@ import jakarta.persistence.Table;
 @Table(name = "bankusers")
 public class BankUser {
 
+    
+    public BankUser() {
+    }
+
+    public BankUser(String firstName, String lastName, String username, String email, String passwordHash)
+     {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        
+    }
+
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "u_id")
     private Long id;
 
 
-    @Column(nullable = false)
+    @Column(name = "first_name",nullable = false)
     private String firstName;
 
-    @Column(nullable = false)
+    @Column(name = "last_name",nullable = false)
     private String lastName;
 
-    @Column(nullable = false,unique = true)
+    @Column(name="user_name",nullable = false,unique = true)
     private String username;
 
-    @Column(nullable = false,unique = true)
+    @Column(name ="email",nullable = false,unique = true)
     private String email;
 
 
-    @Column(nullable = false)
+    @Column(name = "password_hash",nullable = false)
     private String passwordHash;
 
     @OneToOne(mappedBy = "bankUser")

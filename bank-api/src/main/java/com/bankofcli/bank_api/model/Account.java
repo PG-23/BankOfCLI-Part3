@@ -13,19 +13,33 @@ import jakarta.persistence.Table;
 @Table(name="accounts")
 public class Account {
 
+    
+
+    protected Account() {
+    }
+
+
+
+    public Account(String accountNumber,  BankUser bankUser) {
+        this.accountNumber = accountNumber;
+        this.balanceCents = 0;
+        this.bankUser = bankUser;
+    }
+
     @Id 
     @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Column(name="a_id")
     private Long id;
 
 
-    @Column(nullable = false,unique = true,length = 10)
+    @Column(name = "account_number",nullable = false,unique = true,length = 10)
     private String accountNumber;
 
-    @Column(nullable=false)
+    @Column(name="balance_cents",nullable=false)
     private long balanceCents;
 
     @OneToOne (optional = false)
-    @JoinColumn (name = "user_id",nullable = false,unique = true)
+    @JoinColumn (name = "u_id",nullable = false,unique = true)
     private BankUser bankUser;
 
     public Long getId() {
