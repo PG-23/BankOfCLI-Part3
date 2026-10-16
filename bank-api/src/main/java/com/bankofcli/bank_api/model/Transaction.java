@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 @Entity 
 @Table (name="transaction")
@@ -20,7 +21,7 @@ public class Transaction {
     ***************************************************/
 
     @Id 
-    @Column(name = "t_id")
+    @Column(name = "id")
     private String id;
 
     @Column(name = "type")
@@ -32,20 +33,22 @@ public class Transaction {
     private int amountCents;
 
     @ManyToOne 
-    @JoinColumn(name = "from_account", nullable = true)
+    @JoinColumn(name = "from_account_id", nullable = true)
     private Account fromAccount;
 
     @ManyToOne
-    @JoinColumn(name = "to_account", nullable = true)
+    @JoinColumn(name = "to_account_id", nullable = true)
     private Account toAccount;
 
+    @Column(name = "note")
+    @Size(max=255)
+    @Nullable 
+    private String note;
+
+    // Inside the constructors, the default is set to now. No Jakarta command to set default
     @Column(name = "timestamp")
     @NotNull 
     private Instant timestamp;
-
-    @Column(name = "note")
-    @Nullable 
-    private String note;
 
     /********************************************************
     *                      Constructors                     *
@@ -61,8 +64,8 @@ public class Transaction {
         this.amountCents = amountCents;
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
-        this.timestamp = Instant.now();
         this.note = note;
+        this.timestamp = Instant.now();
     }    
 
     // Deposit/Withdraw Constructor
