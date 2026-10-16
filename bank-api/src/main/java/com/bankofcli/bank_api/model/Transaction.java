@@ -46,7 +46,7 @@ public class Transaction {
     private String note;
 
     // Inside the constructors, the default is set to now. No Jakarta command to set default
-    @Column(name = "timestamp")
+    @Column(name = "created_at")
     @NotNull 
     private Instant timestamp;
 
