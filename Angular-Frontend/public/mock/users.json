@@ -1,0 +1,37 @@
+[
+    {
+        "id": "RP1001",
+        "firstName": "Rose",
+        "lastName": "Perez",
+        "email": "rosep@gmail.com",
+        "password": "password123#"
+    },
+    {
+        "id": "LH1002",
+        "firstName": "Leon",
+        "lastName": "Hills",
+        "email": "leonh@gmail.com",
+        "password": "password123#"
+    },
+     {
+        "id": "AR1003",
+        "firstName": "Amy",
+        "lastName": "Rose",
+        "email": "amyr@gmail.com",
+        "password": "password123#"
+    },
+    {
+        "id": "MP1004",
+        "firstName": "Miles",
+        "lastName": "Prowler",
+        "email": "milesp@gmail.com",
+        "password": "password123#"
+    },
+    {
+        "id": "TM1005",
+        "firstName": "Tiana",
+        "lastName": "Mendez",
+        "email": "tianam@gmail.com",
+        "password": "password123#"
+    }
+]

@@ -1,0 +1,224 @@
+<div class="register-page">
+  <header class="top-header">
+    <div class="header-stripe"></div>
+
+    <div class="brand-mark">
+      <div class="brand-name">
+        <span>American</span>
+        <span>Airlines</span>
+      </div>
+
+      <div class="brand-symbol">
+        <span class="wing wing-blue"></span>
+        <span class="wing wing-gray"></span>
+        <span class="wing wing-red"></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="register-main">
+    <section class="register-card">
+      <div class="register-card-top"></div>
+
+      <div class="register-heading">
+        <h1>Create Your Account</h1>
+      </div>
+
+      <div class="register-container">
+        @if (errorMessage) {
+        <div class="error-message" role="alert">
+          <span class="error-icon">!</span>
+          <div>
+            <strong>Review highlighted fields:</strong>
+            <p>{{ errorMessage }}</p>
+          </div>
+        </div>
+        }
+
+        <form (ngSubmit)="onRegister()">
+          <div class="form-group">
+            <label for="firstName">First Name <span>*</span></label>
+            <input id="firstName" type="text" name="firstName" [(ngModel)]="firstName"
+              placeholder="Enter your first name" autocomplete="given-name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Last Name <span>*</span></label>
+            <input id="lastName" type="text" name="lastName" [(ngModel)]="lastName" placeholder="Enter your last name"
+              autocomplete="family-name" required />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Enter Email Address <span>*</span></label>
+            <input id="email" type="email" name="email" [(ngModel)]="email" placeholder="Enter your email address"
+              autocomplete="email" required />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password <span>*</span></label>
+
+            <!-- NEW: password field with show / hide toggle -->
+            <div class="password-field">
+              <input id="password" [type]="showPassword() ? 'text' : 'password'" name="password"
+                [(ngModel)]="password" placeholder="Create a password"
+                autocomplete="new-password" required />
+
+              <button type="button" class="password-toggle"
+                (click)="showPassword.set(!showPassword())"
+                [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+                [attr.aria-pressed]="showPassword()">
+                @if (showPassword()) {
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+                } @else {
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                }
+              </button>
+            </div>
+
+            <small>
+              At least 4 characters, with an uppercase letter, a lowercase
+              letter, and a special character.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">
+              Confirm Password <span>*</span>
+            </label>
+
+            <div class="password-field">
+              <input id="confirmPassword" [type]="showConfirmPassword() ? 'text' : 'password'"
+                name="confirmPassword" [(ngModel)]="confirmPassword"
+                placeholder="Confirm your password" autocomplete="new-password" required />
+
+              <button type="button" class="password-toggle"
+                (click)="showConfirmPassword.set(!showConfirmPassword())"
+                [attr.aria-label]="showConfirmPassword() ? 'Hide confirm password' : 'Show confirm password'"
+                [attr.aria-pressed]="showConfirmPassword()">
+                @if (showConfirmPassword()) {
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+                } @else {
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                }
+              </button>
+            </div>
+
+            @if (confirmPassword && password !== confirmPassword) {
+            <small class="field-error">Passwords do not match.</small>
+            }
+          </div>
+
+          <div class="terms-row">
+            <label class="terms-checkbox-label">
+              <input type="checkbox" name="termsAccepted" [(ngModel)]="termsAccepted"
+                aria-label="Agree to Terms and Conditions and Privacy Policy" />
+              <span class="terms-checkbox"></span>
+            </label>
+
+            <p>
+              I agree to the
+              <a href="#" (click)="openTerms($event)">Terms and Conditions</a>
+              and
+              <a href="#" (click)="openPrivacy($event)">Privacy Policy</a>
+            </p>
+          </div>
+
+          @if (termsError) {
+          <p class="terms-error" role="alert">
+            Please accept the Terms and Conditions and Privacy Policy before creating
+            your account.
+          </p>
+          }
+
+          @if (activePolicy) {
+          <div class="policy-overlay" (click)="closePolicy()">
+            <section class="policy-modal" role="dialog" aria-modal="true"
+              [attr.aria-label]="activePolicy === 'terms' ? 'Terms and Conditions' : 'Privacy Policy'"
+              (click)="$event.stopPropagation()">
+              <button type="button" class="policy-close" aria-label="Close" (click)="closePolicy()">×</button>
+
+              @if (activePolicy === 'terms') {
+              <h2>Terms and Conditions</h2>
+              <p>
+                By creating a Bank of Airlines account, you agree to use this
+                demonstration banking application responsibly and to provide accurate
+                registration information.
+              </p>
+              <p>
+                This project is a frontend demonstration. It does not provide real
+                banking services or process real financial transactions.
+              </p>
+              } @else {
+              <h2>Privacy Policy</h2>
+              <p>
+                The Bank of Airlines demonstration uses the information you enter
+                to simulate account registration and login.
+              </p>
+              <p>
+                This is a student demonstration application, not a production banking
+                service. Do not enter real passwords or sensitive financial information.
+              </p>
+              }
+
+              <button type="button" class="policy-done" (click)="closePolicy()">Close</button>
+            </section>
+          </div>
+          }
+
+          <button type="submit" class="register-button" [disabled]="isLoading">
+            @if (isLoading) {
+            <span class="button-spinner"></span>
+            Creating Account...
+            } @else {
+            <span class="button-user-icon">♙</span>
+            Create Account
+            }
+          </button>
+        </form>
+
+        <div class="login-link-section">
+          <span>Already have an account?</span>
+          <button type="button" (click)="goToLogin()">Log in</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+@if (showUsernamePopup) {
+<div class="username-overlay">
+  <section class="username-popup" role="dialog" aria-modal="true" aria-labelledby="username-popup-title">
+    <button type="button" class="username-popup-close" aria-label="Close and continue to login"
+      (click)="continueToLogin()">
+      ×
+    </button>
+
+    <p id="username-popup-title">Your username is:</p>
+
+    <h2>{{ createdUserId }}!</h2>
+
+    <p class="username-popup-hint">
+      Save this username so you can log in to your account.
+    </p>
+
+    <button type="button" class="username-popup-button" (click)="continueToLogin()">
+      Continue to Login
+    </button>
+  </section>
+</div>
+}

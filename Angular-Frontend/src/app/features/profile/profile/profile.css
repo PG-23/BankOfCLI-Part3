@@ -1,0 +1,99 @@
+.profile { display: grid; justify-items: center; }
+
+.profile__card {
+  width: 100%;
+  max-width: 720px;
+  padding: 1.5rem;
+  background: var(--white);
+  border-radius: var(--radius);
+  color: var(--black);
+}
+
+.profile__title {
+  display: inline-block;
+  margin: 0 0 1rem;
+  padding: 0.6rem 2.5rem;
+  border-radius: 10px;
+  background: var(--blue-light);
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.profile__who { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.5rem; }
+.profile__avatar { flex: 0 0 auto; width: 96px; height: 96px; color: var(--blue); }
+.profile__name { display: grid; gap: 0.15rem; min-width: 0; }
+.profile__name strong { font-size: 1.5rem; font-weight: 500; overflow-wrap: anywhere; }
+.profile__name span { font-size: 1.25rem; color: var(--muted); }
+
+.profile__feedback {
+  margin-bottom: 1rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+.profile__feedback--success { border-color: var(--blue-deep); color: var(--blue-deep); background: var(--blue-tint); }
+.profile__feedback--error { border-color: var(--red); color: var(--red); background: var(--row-debit); }
+
+.profile__form { display: grid; gap: 1.25rem; grid-template-columns: minmax(0, 1fr); }
+
+.field { display: grid; gap: 0.35rem; margin: 0; padding: 0; border: 0; font-size: 0.85rem; align-content: start; }
+.field > span, .field > legend { padding: 0; }
+
+.field input[type='text'],
+.field input[type='email'] {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.6rem 0.9rem;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: var(--blue-tint);
+  color: var(--black);
+  font: inherit;
+  font-size: 1rem; /* 16px stops iOS zoom on focus */
+}
+.field input:focus { outline: none; border-color: var(--blue); background: var(--white); }
+.field input.ng-invalid.ng-touched { border-color: var(--red); }
+.field__readonly { background: #dcdcdc !important; color: var(--muted) !important; cursor: not-allowed; }
+.field__error { color: var(--red); font-size: 0.78rem; }
+
+.gender__options { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1rem;
+  border-radius: 12px;
+  background: var(--blue-tint);
+  cursor: pointer;
+}
+.pill input { accent-color: var(--blue-deep); width: 1.1rem; height: 1.1rem; margin: 0; }
+.pill:has(input:checked) { background: var(--blue-light); }
+.pill:has(input:focus-visible) { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+.save {
+  grid-column: 1 / -1;
+  justify-self: center;
+  min-width: min(100%, 280px);
+  min-height: 56px;
+  margin-top: 0.5rem;
+  border: 0;
+  border-radius: 12px;
+  background: var(--blue);
+  color: var(--white);
+  font: inherit;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.save:hover:not(:disabled) { opacity: 0.88; }
+.save:disabled { opacity: 0.65; cursor: not-allowed; }
+.save:focus-visible { outline: 3px solid var(--blue-deep); outline-offset: 2px; }
+
+@media (min-width: 640px) {
+  .profile__card { padding: 2rem 2.5rem; }
+  .profile__form { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.5rem; }
+}
