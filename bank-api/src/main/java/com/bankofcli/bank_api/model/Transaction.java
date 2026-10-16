@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 @Entity 
-@Table (name="transaction")
+@Table (name="transactions")
 public class Transaction {
     /**************************************************
     *                      Values                     *
