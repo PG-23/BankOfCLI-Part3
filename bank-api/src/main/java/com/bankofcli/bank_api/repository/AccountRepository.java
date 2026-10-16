@@ -16,7 +16,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByAccountNumber(String accountNumber);
 
     // Finds the logged-in user's account (GET /accounts/me)
-    Optional<Account> findByBankUserId(Long userId);
+    Optional<Account> findByUserId(Long userId);
 
     // Locks the row (SELECT .. FOR UPDATE) until the transaction ends.
     // Use before changing a balance: deposit, withdraw, transfer

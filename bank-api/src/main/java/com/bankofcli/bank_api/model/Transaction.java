@@ -14,7 +14,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 @Entity 
-@Table (name="transaction")
+@Table (name="transactions")
 public class Transaction {
     /**************************************************
     *                      Values                     *

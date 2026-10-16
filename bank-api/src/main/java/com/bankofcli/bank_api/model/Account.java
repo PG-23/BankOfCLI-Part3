@@ -1,77 +1,54 @@
 package com.bankofcli.bank_api.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import java.time.Instant;
 
-@Entity 
-@Table(name="accounts")
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.generator.EventType;
+
+import jakarta.persistence.*;
+import org.hibernate.type.SqlTypes;
+
+@Entity
+@Table(name = "accounts")
 public class Account {
 
-    
-
-    protected Account() {
-    }
-
-
-
-    public Account(String accountNumber,  BankUser bankUser) {
-        this.accountNumber = accountNumber;
-        this.balanceCents = 0;
-        this.bankUser = bankUser;
-    }
-
-    @Id 
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    @Column(name="a_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-    @Column(name = "account_number",nullable = false,unique = true,length = 10)
+    @Generated(event = EventType.INSERT)
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(name = "account_number", nullable = false, unique = true,
+            length = 10, insertable = false, updatable = false)
     private String accountNumber;
 
-    @Column(name="balance_cents",nullable=false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column(name = "balance_cents", nullable = false)
     private long balanceCents;
 
-    @OneToOne (optional = false)
-    @JoinColumn (name = "u_id",nullable = false,unique = true)
-    private BankUser bankUser;
+    @Version
+    private Long version;
 
-    public Long getId() {
-        return id;
+    @Generated(event = EventType.INSERT)
+    @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
+    private Instant createdAt;
+
+    protected Account() {}
+
+    public Account(User user) {
+        this.user = user;
+        this.balanceCents = 0;
     }
 
-    
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    public long getBalanceCents() {
-        return balanceCents;
-    }
-
-    public void setBalanceCents(long balanceCents) {
-        this.balanceCents = balanceCents;
-    }
-
-    public BankUser getBankUser() {
-        return bankUser;
-    }
-
-    public void setBankUser(BankUser bankUser) {
-        this.bankUser = bankUser;
-    }
-
-    
-    
+    public Long getId() { return id; }
+    public String getAccountNumber() { return accountNumber; }
+    public User getUser() { return user; }
+    public long getBalanceCents() { return balanceCents; }
+    public void setBalanceCents(long balanceCents) { this.balanceCents = balanceCents; }
+    public Long getVersion() { return version; }
+    public Instant getCreatedAt() { return createdAt; }
 }
