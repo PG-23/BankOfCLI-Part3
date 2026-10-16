@@ -33,11 +33,11 @@ public class Transaction {
 
     @ManyToOne 
     @JoinColumn(name = "from_account", nullable = true)
-    private String fromAccountId;
+    private Account fromAccount;
 
     @ManyToOne
     @JoinColumn(name = "to_account", nullable = true)
-    private String toAccountId;
+    private Account toAccount;
 
     @Column(name = "timestamp")
     @NotNull 
@@ -54,13 +54,13 @@ public class Transaction {
     // Timestamp set automatically went generating a Transaction
 
     // Transfer Constructor
-    public Transaction(String id, @NotNull TransactionType type, @Positive int amountCents, String fromAccountId,
-            String toAccountId, String note) {
+    public Transaction(String id, @NotNull TransactionType type, @Positive int amountCents, Account fromAccount,
+            Account toAccount, String note) {
         this.id = id;
         this.type = type;
         this.amountCents = amountCents;
-        this.fromAccountId = fromAccountId;
-        this.toAccountId = toAccountId;
+        this.fromAccount = fromAccount;
+        this.toAccount = toAccount;
         this.timestamp = Instant.now();
         this.note = note;
     }    
@@ -76,7 +76,7 @@ public class Transaction {
 
     // Empty Constructor for hibernate
     public Transaction(){
-        
+
     }
 
     /***********************************************************
@@ -103,20 +103,20 @@ public class Transaction {
         this.amountCents = amountCents;
     }
 
-    public String getFromAccountId() {
-        return fromAccountId;
+    public Account getFromAccount() {
+        return fromAccount;
     }
 
-    public void setFromAccountId(String fromAccountId) {
-        this.fromAccountId = fromAccountId;
+    public void setFromAccountId(Account fromAccount) {
+        this.fromAccount = fromAccount;
     }
 
-    public String getToAccountId() {
-        return toAccountId;
+    public Account getToAccount() {
+        return toAccount;
     }
 
-    public void setToAccountId(String toAccountId) {
-        this.toAccountId = toAccountId;
+    public void setToAccountId(Account toAccount) {
+        this.toAccount = toAccount;
     }
 
     public Instant getTimestamp() {
