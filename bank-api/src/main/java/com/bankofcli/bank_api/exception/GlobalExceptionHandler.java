@@ -29,14 +29,20 @@ public class GlobalExceptionHandler {
                 ? fieldError.getDefaultMessage()
                 : "Invalid request.";
 
+        // Password failures use WEAK_PASSWORD.
+        // All other validation failures use VALIDATION_ERROR.
+        String code = "password".equals(field)
+                ? "WEAK_PASSWORD"
+                : "VALIDATION_ERROR";
+
         // Create the standardized error response.
         ApiError error = new ApiError(
-                "VALIDATION_ERROR",
+                code,
                 message,
                 field
         );
 
-        // Return HTTP 400 Bad Request with the error.
+        // Return HTTP 400 Bad Request.
         return ResponseEntity.badRequest().body(error);
     }
 }
