@@ -20,7 +20,7 @@ public class Transaction {
     ***************************************************/
 
     @Id 
-    @Column(name = "id")
+    @Column(name = "t_id")
     private String id;
 
     @Column(name = "type")
@@ -65,13 +65,18 @@ public class Transaction {
         this.note = note;
     }    
 
-    // Depsoti/Withdraw Constructor
+    // Deposit/Withdraw Constructor
     // This WILL require the toAccountId or fromAccountId to be manually set
     public Transaction(String id, @NotNull TransactionType type, @Positive int amountCents) {
         this.id = id;
         this.type = type;
         this.amountCents = amountCents;
         this.timestamp = Instant.now();
+    }
+
+    // Empty Constructor for hibernate
+    public Transaction(){
+        
     }
 
     /***********************************************************
