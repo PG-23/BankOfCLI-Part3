@@ -5,7 +5,10 @@ spring:
     password: bankofcli
   jpa:
     hibernate:
-      ddl-auto: update   # switch to "validate" if you adopt Flyway
+      ddl-auto: validate   # Flyway owns the schema; Hibernate only checks entities match it
     open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
 server:
   port: 8080
