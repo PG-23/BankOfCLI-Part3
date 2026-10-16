@@ -1,0 +1,13 @@
+[
+  { "id": "t1", "accountId": "a1", "type": "DEPOSIT", "amount": 1300.0, "description": "paycheck", "balanceAfter": 1300.0, "createdAt": "2026-10-01T14:30:00Z" },
+  { "id": "t2", "accountId": "a1", "type": "WITHDRAW", "amount": 100.0, "balanceAfter": 1200.0, "createdAt": "2026-10-02T09:05:00Z" },
+  { "id": "t3", "accountId": "a2", "type": "DEPOSIT", "amount": 300.0, "balanceAfter": 300.0, "createdAt": "2026-10-02T10:00:00Z" },
+  { "id": "t4", "accountId": "a1", "type": "TRANSFER_OUT", "amount": 200.0, "relatedAccountNumber": "1000000002", "description": "rent share", "balanceAfter": 1000.0, "createdAt": "2026-10-03T16:45:00Z" },
+  { "id": "t5", "accountId": "a2", "type": "TRANSFER_IN", "amount": 200.0, "relatedAccountNumber": "1000000001", "description": "rent share", "balanceAfter": 500.0, "createdAt": "2026-10-03T16:45:00Z" },
+
+  { "id": "t6",  "accountId": "AC1001", "type": "DEPOSIT",  "amount": 2000.0,  "description": "paycheck",          "balanceAfter": 2000.0,  "createdAt": "2026-09-28T14:00:00Z" },
+  { "id": "t7",  "accountId": "AC1001", "type": "WITHDRAW", "amount": 150.0,   "description": "groceries",         "balanceAfter": 1850.0,  "createdAt": "2026-10-01T17:30:00Z" },
+  { "id": "t8",  "accountId": "AC1001", "type": "DEPOSIT",  "amount": 600.0,   "description": "freelance payment", "balanceAfter": 2450.0,  "createdAt": "2026-10-05T09:15:00Z" },
+  { "id": "t9",  "accountId": "AC1003", "type": "DEPOSIT",  "amount": 12345.0, "description": "opening balance",   "balanceAfter": 12345.0, "createdAt": "2026-09-01T12:00:00Z" },
+  { "id": "t10", "accountId": "AC1002", "type": "DEPOSIT",  "amount": 1750.5,  "description": "opening balance",   "balanceAfter": 1750.5,  "createdAt": "2026-09-01T12:00:00Z" }
+]

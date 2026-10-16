@@ -1,0 +1,37 @@
+[
+    {
+        "id": "a1",
+        "userId": "RP1001",
+        "accountNumber": "1000000001",
+        "balance": 1000.0,
+        "currency": "USD"
+    },
+    {
+        "id": "a2",
+        "userId": "LH1002",
+        "accountNumber": "1000000002",
+        "balance": 500.0,
+        "currency": "USD"
+    },
+    {
+        "id": "a3",
+        "userId": "AR1003",
+        "accountNumber": "1000000003",
+        "balance": 750.0,
+        "currency": "USD"
+    },
+    {
+        "id": "a4",
+        "userId": "MP1004",
+        "accountNumber": "1000000004",
+        "balance": 2300.0,
+        "currency": "USD"
+    },
+    {
+        "id": "a5",
+        "userId": "TM1005",
+        "accountNumber": "1000000005",
+        "balance": 1000.0,
+        "currency": "USD"
+    }
+]

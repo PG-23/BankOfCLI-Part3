@@ -1,0 +1,844 @@
+/* =========================================
+   LOGIN PAGE
+   ========================================= */
+
+.login-page {
+  min-height: 100vh;
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #333333;
+  overflow-x: hidden;
+}
+
+
+/* =========================================
+   TOP HEADER
+   ========================================= */
+
+.top-header {
+  position: relative;
+  height: 150px;
+
+  background: linear-gradient(to bottom,
+      #168fc3 0%,
+      #168fc3 47%,
+      #ffffff 47%,
+      #ffffff 57%,
+      #168fc3 57%,
+      #168fc3 100%);
+
+  border-bottom: 1px solid #d5d5d5;
+}
+
+.header-line {
+  position: absolute;
+  top: 22px;
+  left: 0;
+
+  width: 100%;
+  height: 1px;
+
+  background: rgba(255, 255, 255, 0.35);
+}
+
+
+/* =========================================
+   BANK OF AIRLINES BRAND
+   ========================================= */
+
+.brand-mark {
+  position: absolute;
+  top: 0;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: 212px;
+  height: 150px;
+
+  background: #ffffff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  z-index: 2;
+}
+
+.brand-symbol {
+  position: relative;
+
+  width: 92px;
+  height: 82px;
+
+  margin-top: 12px;
+}
+
+.wing {
+  position: absolute;
+  display: block;
+
+  border-radius: 100% 0 100% 0;
+
+  transform-origin: center;
+}
+
+.wing-blue {
+  width: 78px;
+  height: 18px;
+
+  top: 27px;
+  left: 7px;
+
+  background: #168fc3;
+
+  transform: rotate(-18deg);
+}
+
+.wing-purple {
+  width: 70px;
+  height: 18px;
+
+  top: 19px;
+  left: 4px;
+
+  background: #3a24e3;
+
+  transform: rotate(9deg);
+}
+
+.wing-red {
+  width: 70px;
+  height: 17px;
+
+  top: 42px;
+  left: 20px;
+
+  background: #e32424;
+
+  transform: rotate(48deg);
+}
+
+.brand-name {
+  margin-top: 1px;
+
+  color: #314d67;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  letter-spacing: 1px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   SECURE CHECK
+   ========================================= */
+
+.secure-mark {
+  position: absolute;
+
+  right: 28px;
+  top: 11px;
+
+  width: 38px;
+  height: 38px;
+
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.secure-mark span {
+  color: #ffffff;
+
+  font-size: 25px;
+  line-height: 1;
+  font-weight: 300;
+}
+
+
+/* =========================================
+   MAIN CONTENT
+   ========================================= */
+
+.login-content {
+  display: grid;
+
+  /* Slightly narrower welcome panel */
+  grid-template-columns: 37% 63%;
+
+  min-height: calc(100vh - 150px);
+}
+
+
+/* =========================================
+   WELCOME PANEL
+   ========================================= */
+
+.welcome-panel {
+  position: relative;
+
+  min-height: calc(100vh - 150px);
+
+  background: linear-gradient(to bottom,
+      #1594c6 0%,
+      #3da9d0 30%,
+      #78c0dc 62%,
+      #d9eff7 100%);
+
+  border-right: 1px solid #c9d7dc;
+}
+
+.welcome-content {
+  padding: 104px 46px;
+}
+
+.welcome-content h1 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-family: Georgia, 'Times New Roman', serif;
+
+  /* Slightly smaller */
+  font-size: clamp(44px, 3.7vw, 60px);
+
+  line-height: 0.96;
+
+  font-weight: 700;
+
+  letter-spacing: -1px;
+}
+
+.welcome-content p {
+  margin: 52px 0 0;
+
+  color: #ffffff;
+
+  font-family: Georgia, 'Times New Roman', serif;
+
+  font-size: clamp(22px, 1.75vw, 28px);
+
+  line-height: 1.13;
+
+  font-weight: 600;
+}
+
+
+/* =========================================
+   LOGIN PANEL
+   ========================================= */
+
+.login-panel {
+  min-height: calc(100vh - 150px);
+
+  background: #ffffff;
+
+  display: flex;
+  justify-content: center;
+
+  /*
+   * Pull the content upward slightly.
+   */
+  padding: 48px 40px 40px;
+}
+
+.login-container {
+  width: min(100%, 590px);
+}
+
+
+/* =========================================
+   LOGIN / SIGN UP TABS
+   ========================================= */
+
+.auth-tabs {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 48px;
+
+  width: min(100%, 420px);
+
+  margin: 0 auto 28px;
+}
+
+.auth-tab {
+  height: 60px;
+
+  border: none;
+  border-radius: 5px;
+
+  background: #168fc3;
+
+  color: #ffffff;
+
+  font-family: Georgia, 'Times New Roman', serif;
+
+  font-size: 24px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.auth-tab:hover {
+  transform: translateY(-1px);
+  opacity: 0.94;
+}
+
+.auth-tab.active {
+  background: linear-gradient(90deg,
+      #168fc3 0%,
+      #168fc3 48%,
+      #e32424 100%);
+}
+
+
+/* =========================================
+   ERROR MESSAGE
+   ========================================= */
+
+.error-message {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  width: 100%;
+
+  margin: 0 0 20px;
+  padding: 11px 14px;
+
+  box-sizing: border-box;
+
+  border-left: 4px solid #e32424;
+
+  background: #fce9e9;
+
+  color: #a71919;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.error-icon {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 21px;
+  height: 21px;
+
+  border-radius: 50%;
+
+  background: #e32424;
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* =========================================
+   FORM
+   ========================================= */
+
+.login-form {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #4b4b4b;
+
+  font-size: 17px;
+  font-weight: 400;
+}
+
+.form-group label span {
+  color: #e32424;
+  font-weight: 700;
+}
+
+.form-group input {
+  box-sizing: border-box;
+
+  width: 100%;
+  height: 61px;
+
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+
+  background: #d1d1d1;
+
+  padding: 0 16px;
+
+  color: #222222;
+
+  font-size: 17px;
+
+  outline: none;
+
+  transition:
+    background 0.15s ease,
+    border 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.form-group input:focus {
+  background: #e2e2e2;
+
+  border-color: #168fc3;
+
+  box-shadow:
+    0 0 0 2px rgba(22, 143, 195, 0.12);
+}
+
+
+/* =========================================
+   FORGOT PASSWORD
+   ========================================= */
+
+.forgot-password {
+  display: flex;
+
+  justify-content: flex-end;
+
+  margin-top: -10px;
+
+  margin-bottom: 18px;
+}
+
+.forgot-button {
+  border: none;
+
+  background: transparent;
+
+  padding: 0;
+
+  color: #4c4c4c;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.forgot-button:hover {
+  color: #168fc3;
+
+  text-decoration: underline;
+}
+
+
+/* =========================================
+   MAIN LOGIN BUTTON
+   ========================================= */
+
+.login-button-wrapper {
+  display: flex;
+
+  justify-content: center;
+
+  margin-top: 2px;
+}
+
+.login-button {
+  width: 175px;
+  height: 60px;
+
+  border: none;
+  border-radius: 5px;
+
+  background: linear-gradient(90deg,
+      #168fc3 0%,
+      #168fc3 45%,
+      #e32424 100%);
+
+  color: #ffffff;
+
+  font-family: Georgia, 'Times New Roman', serif;
+
+  font-size: 24px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.login-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  opacity: 0.95;
+}
+
+.login-button:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.75;
+}
+
+
+/* =========================================
+   BUTTON SPINNER
+   ========================================= */
+
+.button-spinner {
+  width: 17px;
+  height: 17px;
+
+  border: 2px solid rgba(255, 255, 255, 0.45);
+
+  border-top-color: #ffffff;
+
+  border-radius: 50%;
+
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================
+   ACCOUNT OPTIONS
+   ========================================= */
+
+.account-options {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 22px;
+
+  width: min(100%, 450px);
+
+  /*
+   * Much closer to the login button.
+   */
+  margin: 62px auto 0;
+}
+
+.account-option {
+  min-height: 145px;
+
+  border: 2px solid #76bee5;
+
+  border-radius: 19px;
+
+  background: #ffffff;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  color: #333333;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.account-option:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.option-icon {
+  width: 52px;
+  height: 52px;
+
+  border: 2px solid #008ed0;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #008ed0;
+
+  font-family: Georgia, 'Times New Roman', serif;
+
+  font-size: 32px;
+
+  line-height: 1;
+}
+
+.account-option span {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+
+/* =========================================
+   CONTACT
+   ========================================= */
+
+.contact-button {
+  display: block;
+
+  margin: 13px auto 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #0085c3;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.contact-button:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (max-width: 900px) {
+
+  .login-content {
+    grid-template-columns: 40% 60%;
+  }
+
+  .welcome-content {
+    padding: 80px 30px;
+  }
+
+  .welcome-content h1 {
+    font-size: 43px;
+  }
+
+  .welcome-content p {
+    font-size: 22px;
+
+    margin-top: 38px;
+  }
+
+  .login-panel {
+    padding: 45px 28px 40px;
+  }
+
+  .auth-tabs {
+    gap: 22px;
+  }
+
+  .account-options {
+    margin-top: 55px;
+  }
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 700px) {
+
+  .top-header {
+    height: 105px;
+  }
+
+  .brand-mark {
+    width: 170px;
+    height: 105px;
+  }
+
+  .brand-symbol {
+    transform: scale(0.72);
+
+    transform-origin: center top;
+
+    margin-top: 5px;
+  }
+
+  .brand-name {
+    margin-top: -18px;
+
+    font-size: 11px;
+
+    letter-spacing: 0.7px;
+  }
+
+  .secure-mark {
+    right: 15px;
+    top: 10px;
+
+    width: 30px;
+    height: 30px;
+  }
+
+  .secure-mark span {
+    font-size: 19px;
+  }
+
+
+  .login-content {
+    display: block;
+
+    min-height: auto;
+  }
+
+
+  .welcome-panel {
+    min-height: 250px;
+
+    border-right: none;
+
+    border-bottom: 1px solid #c9d7dc;
+  }
+
+  .welcome-content {
+    padding: 42px 30px;
+  }
+
+  .welcome-content h1 {
+    font-size: 42px;
+  }
+
+  .welcome-content p {
+    margin-top: 24px;
+
+    font-size: 21px;
+  }
+
+
+  .login-panel {
+    min-height: auto;
+
+    padding: 42px 22px 50px;
+  }
+
+  .login-container {
+    width: 100%;
+  }
+
+  .auth-tabs {
+    gap: 15px;
+
+    width: 100%;
+  }
+
+  .auth-tab {
+    height: 55px;
+
+    font-size: 21px;
+  }
+
+  .form-group input {
+    height: 58px;
+  }
+
+  .account-options {
+    width: 100%;
+
+    gap: 12px;
+
+    margin-top: 52px;
+  }
+
+  .account-option {
+    min-height: 135px;
+  }
+}
+
+
+/* =========================================
+   SMALL PHONES
+   ========================================= */
+
+@media (max-width: 430px) {
+
+  .brand-mark {
+    width: 155px;
+  }
+
+  .brand-name {
+    font-size: 10px;
+  }
+
+  .welcome-panel {
+    min-height: 230px;
+  }
+
+  .welcome-content {
+    padding: 37px 24px;
+  }
+
+  .welcome-content h1 {
+    font-size: 36px;
+  }
+
+  .welcome-content p {
+    font-size: 19px;
+  }
+
+  .login-panel {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .auth-tab {
+    font-size: 19px;
+  }
+
+  .account-option span {
+    font-size: 12px;
+  }
+
+  .option-icon {
+    width: 47px;
+    height: 47px;
+
+    font-size: 29px;
+  }
+}

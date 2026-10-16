@@ -1,0 +1,6 @@
+[
+    { "id": "r1", "firstName": "Leon", "lastName": "Hills", "accountNumber": "1000000002"},
+    { "id": "r2", "firstName": "Amy", "lastName": "Rose", "accountNumber": "1000000003"},
+    { "id": "r3", "firstName": "Miles", "lastName": "Prowler", "accountNumber": "1000000004"},
+    { "id": "r4", "firstName": "Tiana", "lastName": "Mendez", "accountNumber": "1000000005"}
+]

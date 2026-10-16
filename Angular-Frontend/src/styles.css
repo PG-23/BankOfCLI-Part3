@@ -1,0 +1,91 @@
+/* Global styles for Bank of Airlines */
+
+/* =========================================
+   PALETTE & TOKENS
+   ========================================= */
+:root {
+  --blue: #0B7FBE;
+  --blue-mid: #3092C7;
+  --blue-deep: #005F93;
+  --blue-light: #83BEDB;
+  --blue-tint: #D1E7EE;
+  --red: #E32424;
+
+  /* derived tints */
+  --card: #EEF6F9;
+  --row-credit: #E8F3F9;
+  --row-debit: #FBECEC;
+
+  --black: #000000;
+  --white: #ffffff;
+  --muted: rgba(0, 0, 0, 0.62);
+  --radius: 16px;
+  --font: 'Segoe UI', system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+
+  /* old names, kept so teammates' components don't break */
+  --paper: #F2F6F7;
+  --mint: var(--card);
+  --blue-head: var(--blue-light);
+  --red-tint: var(--row-debit);
+}
+
+/* =========================================
+   GLOBAL RESET
+   ========================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: var(--font);
+  background: linear-gradient(
+    180deg,
+    var(--blue-mid) 0%,
+    var(--blue-light) 30%,
+    #ffffff 55%,
+    var(--red) 100%
+  ) fixed;
+}
+
+/* =========================================
+   SHOW / HIDE PASSWORD TOGGLE
+   ========================================= */
+.password-field {
+  position: relative;
+}
+
+.password-field > input {
+  width: 100%;
+  padding-right: 3rem !important;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.password-toggle:hover { color: var(--blue-deep); background: rgba(0, 0, 0, 0.06); }
+.password-toggle:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
