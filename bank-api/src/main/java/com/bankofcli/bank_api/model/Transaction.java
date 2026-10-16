@@ -1,6 +1,6 @@
 package com.bankofcli.bank_api.model;
 
-import java.time.Instant;
+import java.time.OffsetDateTime;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
@@ -22,7 +22,7 @@ public class Transaction {
 
     @Id 
     @Column(name = "id")
-    private String id;
+    private long id;
 
     @Column(name = "type")
     @NotNull 
@@ -30,7 +30,7 @@ public class Transaction {
 
     @Column(name = "amount_cents")
     @Positive 
-    private int amountCents;
+    private long amountCents;
 
     @ManyToOne 
     @JoinColumn(name = "from_account_id", nullable = true)
@@ -48,7 +48,7 @@ public class Transaction {
     // Inside the constructors, the default is set to now. No Jakarta command to set default
     @Column(name = "created_at")
     @NotNull 
-    private Instant timestamp;
+    private OffsetDateTime timestamp;
 
     /********************************************************
     *                      Constructors                     *
@@ -57,7 +57,7 @@ public class Transaction {
     // Timestamp set automatically went generating a Transaction
 
     // Transfer Constructor
-    public Transaction(String id, @NotNull TransactionType type, @Positive int amountCents, Account fromAccount,
+    public Transaction(long id, @NotNull TransactionType type, @Positive long amountCents, Account fromAccount,
             Account toAccount, String note) {
         this.id = id;
         this.type = type;
@@ -65,16 +65,16 @@ public class Transaction {
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;
         this.note = note;
-        this.timestamp = Instant.now();
+        this.timestamp = OffsetDateTime.now();
     }    
 
     // Deposit/Withdraw Constructor
     // This WILL require the toAccountId or fromAccountId to be manually set
-    public Transaction(String id, @NotNull TransactionType type, @Positive int amountCents) {
+    public Transaction(long id, @NotNull TransactionType type, @Positive int amountCents) {
         this.id = id;
         this.type = type;
         this.amountCents = amountCents;
-        this.timestamp = Instant.now();
+        this.timestamp = OffsetDateTime.now();
     }
 
     // Empty Constructor for hibernate
@@ -86,7 +86,7 @@ public class Transaction {
     *                      Getters/Setters                     *
     ************************************************************/
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
@@ -98,7 +98,7 @@ public class Transaction {
         this.type = type;
     }
 
-    public int getAmountCents() {
+    public long getAmountCents() {
         return amountCents;
     }
 
@@ -122,11 +122,11 @@ public class Transaction {
         this.toAccount = toAccount;
     }
 
-    public Instant getTimestamp() {
+    public OffsetDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Instant timestamp) {
+    public void setTimestamp(OffsetDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
