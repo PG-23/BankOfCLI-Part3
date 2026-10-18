@@ -2,6 +2,7 @@
 package com.bankofcli.bank_api.exception;
 
 import com.bankofcli.bank_api.dto.ApiError;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,5 +45,11 @@ public class GlobalExceptionHandler {
 
         // Return HTTP 400 Bad Request.
         return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(EmailTakenException.class)
+    public ResponseEntity<ApiError> handleEmailTaken(EmailTakenException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiError("EMAIL_TAKEN", ex.getMessage(), "email"));
     }
 }
