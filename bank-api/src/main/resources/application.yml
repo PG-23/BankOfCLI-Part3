@@ -1,3 +1,7 @@
+app:
+  jwt:
+    secret: ${JWT_SECRET:local-dev-secret-change-me-before-deploying-0000}
+    expiration-minutes: 60
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/bankofcli
@@ -12,3 +16,5 @@ spring:
     locations: classpath:db/migration
 server:
   port: 8080
+  servlet:
+    context-path: /api
