@@ -8,17 +8,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bankofcli.bank_api.dto.RecipientResponse;
 import com.bankofcli.bank_api.service.RecipientService;
 
-@RestController 
+@RestController
 public class RecipientController {
-    private final RecipientService recipientService;
+   private final RecipientService recipientService;
 
-    public RecipientController(RecipientService recipientService) {
-        this.recipientService = recipientService;
-    }
+   public RecipientController(RecipientService recipientService){
+       this.recipientService = recipientService;
+   }
 
-    @GetMapping("/accounts/{accountNumber}")
-    public RecipientResponse lookupRecipient(@PathVariable String accountNumber, Authentication authentication) {
-        return recipientService.lookupRecipient(accountNumber, authentication.getName());
-    }
-
+   @GetMapping("/accounts/{accountNumber}")
+   public RecipientResponse lookupRecipient(@PathVariable String accountNumber, Authentication auth){
+       // JWT subject is the user's database id
+       Long userId = Long.valueOf(auth.getName());
+       return recipientService.lookupRecipient(userId, accountNumber);
+   }
 }
