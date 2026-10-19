@@ -8,6 +8,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.bankofcli.bank_api.dto.ApiError;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -51,5 +53,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleEmailTaken(EmailTakenException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ApiError("EMAIL_TAKEN", ex.getMessage(), "email"));
+    }
+
+    @ExceptionHandler (ApiException.class)
+    public ResponseEntity<ApiError> handleApi(ApiException ex){
+        return ResponseEntity.status(ex.getStatus())
+            .body(new ApiError(ex.getCode(),ex.getMessage(),ex.getField()));
     }
 }
