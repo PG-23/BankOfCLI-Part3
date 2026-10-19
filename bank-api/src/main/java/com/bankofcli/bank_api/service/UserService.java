@@ -49,4 +49,11 @@ public class UserService {
         Account account = accounts.save(new Account(user));     // DB assigns account_number
         return new RegisteredUser(user, account);
     }
+
+    @Transactional(readOnly = true)
+    public User getSignedInUser(long userId) {
+        return users.findById(userId)
+            .orElseThrow(() -> new IllegalStateException("User not found"));
+    }
+
 }
