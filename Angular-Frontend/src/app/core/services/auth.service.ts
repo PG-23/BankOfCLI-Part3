@@ -1,4 +1,6 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, InjectionToken, inject } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import {
   User,
   LoginRequest,
@@ -11,10 +13,18 @@ import users from '../mock/users.json';
 import credentials from '../mock/credentials.json';
 import { CurrentUserService } from './current.user.services';
 
+export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL', {
+  providedIn: 'root',
+  factory: () => '',
+});
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
+  private http = inject(HttpClient);
+  private apiBaseUrl = inject(API_BASE_URL);
 
   private currentUserService = inject(CurrentUserService);
   private users: User[] = users;
@@ -26,53 +36,81 @@ export class AuthService {
 
   private currentUser: User | null = null;
 
-  login(request: LoginRequest): ApiResponse<AuthResponse> {
+  login(request: LoginRequest): Observable<ApiResponse<AuthResponse>> {
+    const baseUrl = this.apiBaseUrl.replace(/\/+$/, '');
+    const url = `${baseUrl}/auth/login`;
 
-    const credential = this.credentials.find(
-      (item) =>
-        item.userId === request.identifier ||
-        this.findUserById(item.userId)?.email === request.identifier
-    );
+    return this.http
+      .post<ApiResponse<AuthResponse>>(url, request)
+      .pipe(
+        map((response) => {
+          if (response.success && response.data) {
+            const user = response.data.user;
 
-    if (!credential || credential.password !== request.password) {
-      return {
-        success: false,
-        error: {
-          code: 'INVALID_CREDENTIALS',
-          message: 'Invalid email, user ID, or password.'
-        }
-      };
-    }
+            this.currentUser = user;
+            this.currentUserService.setUser(user);
 
-    const user = this.findUserById(credential.userId);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('currentUser', JSON.stringify(user));
+            }
+          }
 
-    if (!user) {
-      return {
-        success: false,
-        error: {
-          code: 'UNAUTHORIZED',
-          message: 'User could not be found.'
-        }
-      };
-    }
+          return response;
+        }),
+        catchError((error: unknown) => {
+          if (error instanceof HttpErrorResponse) {
+            const body = error.error as {
+              success?: boolean;
+              error?: {
+                code?: string;
+                message?: string;
+              };
+            } | null;
 
-    this.currentUser = user;
-    this.currentUserService.setUser(user);
+            // Preserve an error returned in the agreed API envelope.
+            if (
+              body?.success === false &&
+              body.error?.code &&
+              body.error.message
+            ) {
+              return of({
+                success: false,
+                error: {
+                  code: body.error.code as ApiResponse<AuthResponse>['error'] extends infer E
+                    ? E extends { code: infer C } ? C : never
+                    : never,
+                  message: body.error.message,
+                },
+              });
+            }
 
-    // Save the logged-in user in the browser for route protection.
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('currentUser', JSON.stringify(user));
-    }
+            // Translate common HTTP errors into the frontend contract.
+            if (error.status === 400) {
+              return of({
+                success: false,
+                error: {
+                  code: 'VALIDATION_ERROR' as const,
+                  message: 'Please check the information you entered.',
+                },
+              });
+            }
 
-    return {
-      success: true,
-      data: {
-        user,
-        token: `mock-token-${user.id}`
-      }
-    };
+            if (error.status === 401) {
+              return of({
+                success: false,
+                error: {
+                  code: 'INVALID_CREDENTIALS' as const,
+                  message: 'Invalid email, user ID, or password.',
+                },
+              });
+            }
+          }
+
+          // Let the login page show a generic message for network/server failures.
+          return throwError(() => error);
+        })
+      );
   }
-
   register(request: RegisterRequest): ApiResponse<User> {
 
     const emailExists = this.users.some(

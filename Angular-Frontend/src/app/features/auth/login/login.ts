@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -14,7 +14,6 @@ export class Login {
 
   private authService = inject(AuthService);
   private router = inject(Router);
-  private cdr = inject(ChangeDetectorRef);
 
   identifier = '';
   password = '';
@@ -33,25 +32,27 @@ export class Login {
 
     this.isLoading = true;
 
-    // Simulate a short server response delay.
-    setTimeout(() => {
-      const response = this.authService.login({
-        identifier: this.identifier.trim(),
-        password: this.password,
-      });
+    this.authService.login({
+      identifier: this.identifier.trim(),
+      password: this.password,
+    }).subscribe({
+      next: (response) => {
+        this.isLoading = false;
 
-      if (!response.success) {
+        if (!response.success || !response.data) {
+          this.errorMessage =
+            response.error?.message ?? 'Unable to log in.';
+          return;
+        }
+
+        this.router.navigate(['/dashboard']);
+      },
+      error: () => {
         this.isLoading = false;
         this.errorMessage =
-          response.error?.message ?? 'Unable to log in.';
-
-        this.cdr.detectChanges();
-        return;
-      }
-
-      this.isLoading = false;
-      this.router.navigate(['/dashboard']);
-    }, 700);
+          'Unable to log in right now. Please try again.';
+      },
+    });
   }
 
   goToRegister(): void {
