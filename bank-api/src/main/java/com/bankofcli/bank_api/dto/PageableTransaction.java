@@ -1,12 +1,13 @@
 package com.bankofcli.bank_api.dto;
 
-import java.util.List;
+
+import org.springframework.data.domain.Page;
 
 import com.bankofcli.bank_api.model.Transaction;
 
 public record PageableTransaction(
     int maxPages,
-    List<Transaction> transactions
+    Page<Transaction> transactions
 ) {
     
 }
