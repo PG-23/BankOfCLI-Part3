@@ -1,0 +1,19 @@
+$kind: http-request
+description: Manually set expiredJwtToken to a genuine token that has passed its exp timestamp. A blank variable is not a real expiration test.
+url: "{{baseUrl}}{{apiPrefix}}/accounts/me"
+method: GET
+headers:
+  Accept: application/json
+auth:
+  type: bearer
+  credentials:
+    token: "{{expiredJwtToken}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("HTTP 401", function () { pm.response.to.have.status(401); });
+      pm.test("Contract error code", function () {
+        pm.expect(pm.response.json().code).to.eql("UNAUTHORIZED");
+      });
+    language: text/javascript
+order: 3000

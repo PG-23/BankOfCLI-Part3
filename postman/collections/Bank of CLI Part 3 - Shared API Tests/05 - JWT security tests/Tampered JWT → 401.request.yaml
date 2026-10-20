@@ -1,0 +1,19 @@
+$kind: http-request
+description: Uses a deliberately invalid bearer token.
+url: "{{baseUrl}}{{apiPrefix}}/accounts/me"
+method: GET
+headers:
+  Accept: application/json
+auth:
+  type: bearer
+  credentials:
+    token: ""
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("HTTP 401", function () { pm.response.to.have.status(401); });
+      pm.test("Contract error code", function () {
+        pm.expect(pm.response.json().code).to.eql("UNAUTHORIZED");
+      });
+    language: text/javascript
+order: 2000

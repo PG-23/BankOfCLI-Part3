@@ -1,0 +1,17 @@
+$kind: collection
+name: Bank of CLI Part 3 | Shared API Tests
+description: "Team collection based on docs/api-contract.md in the Oct 20 ZIP. Import into Postman; set the loginPassword collection variable locally (demo: password1); run Login & save JWT; then run authenticated requests. Contract uses /auth/login, /accounts/me and /transactions/withdraw, while currently implemented HealthController uses /api/health. Ask the team whether to use a global /api prefix before changing apiPrefix. Several endpoints do not exist in the inspected snapshot: failed requests may reflect unfinished features, not collection errors. Only the successful withdrawal request mutates demo data. Do not export real tokens/passwords. Use Postman collection variables, not production credentials."
+variables:
+  baseUrl: http://localhost:8080
+  apiPrefix: ""
+  loginIdentifier: alice@bank.com
+  loginPassword: ""
+  accountNumber: "1000001234"
+  jwtToken: ""
+  expiredJwtToken: ""
+auth:
+  - id: d24a89cf-21f0-4a9c-90a2-c6dffb18ab29
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{jwtToken}}"

@@ -1,0 +1,4 @@
+$kind: collection
+name: 05 | JWT security tests
+description: SecurityConfig currently lacks a JWT filter and returns empty 401 via HttpStatusEntryPoint. These test expectations become valid only after JWT integration and contract-compliant security error handling.
+order: 5000

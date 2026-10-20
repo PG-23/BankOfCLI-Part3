@@ -1,0 +1,4 @@
+$kind: collection
+name: 01 | Health check
+description: The health request has its own /api path in the current controller.
+order: 1000

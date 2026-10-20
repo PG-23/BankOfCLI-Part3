@@ -1,0 +1,37 @@
+$kind: http-request
+url: "{{baseUrl}}{{apiPrefix}}/auth/register"
+method: POST
+body:
+  type: json
+  content: |-
+    {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john.postman2@example.com",
+      "password": "password123"
+    }
+scripts:
+  - type: afterResponse
+    code: |
+
+      pm.test("Registration returns 201", function () {
+          pm.response.to.have.status(201);
+      });
+
+      if (pm.response.code === 201) {
+
+          // Convert the API response into a JavaScript object.
+          const body = pm.response.json();
+
+          // Verify that the response contains a JWT.
+          pm.test("Registration includes a JWT", function () {
+              pm.expect(body.token).to.be.a("string").and.not.empty;
+          });
+
+          // Automatically save the JWT in our collection variables.
+          if (typeof body.token === "string" && body.token.length > 0) {
+              pm.collectionVariables.set("jwtToken", body.token);
+          }
+      }
+    language: text/javascript
+order: 3000

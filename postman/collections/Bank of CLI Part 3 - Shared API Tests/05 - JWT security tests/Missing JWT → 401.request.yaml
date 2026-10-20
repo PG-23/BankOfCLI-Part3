@@ -1,0 +1,17 @@
+$kind: http-request
+description: "No Authorization header: expected HTTP 401 and ApiError UNAUTHORIZED after JWT security is implemented."
+url: "{{baseUrl}}{{apiPrefix}}/accounts/me"
+method: GET
+headers:
+  Accept: application/json
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("HTTP 401", function () { pm.response.to.have.status(401); });
+      pm.test("Contract error code", function () {
+        pm.expect(pm.response.json().code).to.eql("UNAUTHORIZED");
+      });
+    language: text/javascript
+order: 1000
