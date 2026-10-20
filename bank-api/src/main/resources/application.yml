@@ -1,3 +1,7 @@
+app:
+  jwt:
+    secret: ${JWT_SECRET:local-dev-secret-change-me-before-deploying-0000}
+    expiration-minutes: 60
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/bankofcli
@@ -10,5 +14,9 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+    # The dev-only seed (db/seed) is missing when running without the dev profile; don't fail on it.
+    ignore-migration-patterns: "*:future,*:missing"
 server:
   port: 8080
+  servlet:
+    context-path: /api
