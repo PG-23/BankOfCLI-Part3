@@ -54,8 +54,8 @@ public class TransactionController {
     }
     
     // Angular Transaction
-    @GetMapping("/transactions")
-    public List<TransactionDto> getMethodName(@AuthenticationPrincipal Jwt jwt) {
+    @GetMapping("")
+    public List<TransactionDto> getAllTransactions(@AuthenticationPrincipal Jwt jwt) {
         long accountId = Long.parseLong(jwt.getSubject());
         return transactionService.getAllTransactions(accountId);
     }

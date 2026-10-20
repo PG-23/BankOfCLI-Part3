@@ -14,10 +14,16 @@ import com.bankofcli.bank_api.model.Transaction;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    @Query("SELECT t FROM transactions t WHERE t.fromAccount.id = :accountId OR t.toAccount.id = :accountId  ORDER BY t.timestamp ASC")
+    @Query("""
+        SELECT t FROM Transaction t 
+        WHERE t.fromAccount.id = :accountId OR t.toAccount.id = :accountId
+    """)
     List<Transaction> getAllFromAccountId(@Param("accountId") long accountId);
 
-    @Query("SELECT t FROM transactions t WHERE t.fromAccount.id = :accountId OR t.toAccount.id = :accountId  ORDER BY t.timestamp ASC")
+    @Query("""
+        SELECT t FROM Transaction t 
+        WHERE t.fromAccount.id = :accountId OR t.toAccount.id = :accountId
+    """)
     Page<Transaction> getPageFromAccountId(@Param("accountId") long accountId, Pageable pageable);
     //Every transaction where this account sent OR received money,since the given time oldest first
     @Query("""
