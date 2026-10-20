@@ -7,6 +7,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -23,6 +25,7 @@ public class Transaction {
     ***************************************************/
 
     @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY) 
     @Column(name = "id")
     private long id;
 
@@ -60,9 +63,9 @@ public class Transaction {
     // Timestamp set automatically went generating a Transaction
 
     // Transfer Constructor
-    public Transaction(long id, @NotNull TransactionType type, @Positive long amountCents, Account fromAccount,
+    public Transaction( @NotNull TransactionType type, @Positive long amountCents, Account fromAccount,
             Account toAccount, String note) {
-        this.id = id;
+       
         this.type = type;
         this.amountCents = amountCents;
         this.fromAccount = fromAccount;
@@ -73,8 +76,8 @@ public class Transaction {
 
     // Deposit/Withdraw Constructor
     // This WILL require the toAccountId or fromAccountId to be manually set
-    public Transaction(long id, @NotNull TransactionType type, @Positive int amountCents) {
-        this.id = id;
+    public Transaction( @NotNull TransactionType type, @Positive int amountCents) {
+       
         this.type = type;
         this.amountCents = amountCents;
         this.timestamp = OffsetDateTime.now();
