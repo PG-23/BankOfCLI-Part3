@@ -7,7 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.time.OffsetDateTime;
 
+import com.bankofcli.bank_api.model.Account;
 import com.bankofcli.bank_api.model.Transaction;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
@@ -17,4 +19,15 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     @Query("SELECT t FROM transactions t WHERE t.fromAccount.id = :accountId OR t.toAccount.id = :accountId  ORDER BY t.timestamp ASC")
     Page<Transaction> getPageFromAccountId(@Param("accountId") long accountId, Pageable pageable);
+    //Every transaction where this account sent OR received money,since the given time oldest first
+    @Query("""
+            SELECT t FROM Transaction t
+            WHERE(t.fromAccount = :account OR t.toAccount = :account)
+                AND t.timestamp >= :since
+            ORDER BY t.timestamp ASC
+
+            """)
+            
+    List<Transaction> findActivitySince(@Param("account") Account account,
+                                        @Param("since") OffsetDateTime since);
 }
