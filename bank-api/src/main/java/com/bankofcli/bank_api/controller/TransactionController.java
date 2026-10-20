@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bankofcli.bank_api.dto.TransactionDto;
 import com.bankofcli.bank_api.dto.TransactionResponse;
 import com.bankofcli.bank_api.dto.TransferRequest;
 import com.bankofcli.bank_api.service.TransactionService;
@@ -48,20 +49,20 @@ public class TransactionController {
     
     // Angular Transaction
     @GetMapping("/transactions")
-    public List<Transaction> getMethodName(@AuthenticationPrincipal Jwt jwt) {
+    public List<TransactionDto> getMethodName(@AuthenticationPrincipal Jwt jwt) {
         long accountId = Long.parseLong(jwt.getSubject());
         return transactionService.getAllTransactions(accountId);
     }
     
     // React Endpoint
-    @GetMapping("/transactions")
-    public Page<Transaction> getPagedTransactions(@AuthenticationPrincipal Jwt jwt, @RequestBody @PageableDefault(
-        size = 10,
-        sort = "createdAt",
+    @GetMapping("/transactions/paged")
+    public Page<TransactionDto> getPagedTransactions(@AuthenticationPrincipal Jwt jwt, @PageableDefault(
+        size = 5,
+        sort = "timestamp",
         direction = Sort.Direction.DESC
     ) Pageable pageable) {
-        long accountId = Long.parseLong(jwt.getSubject());
-        return transactionService.getAllTransactionPaginated(accountId, pageable);
+        long userId = Long.parseLong(jwt.getSubject());
+        return transactionService.getAllTransactionPaginated(userId, pageable);
     }
 
 }
