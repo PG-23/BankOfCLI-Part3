@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bankofcli.bank_api.dto.ActivityResponse;
+import com.bankofcli.bank_api.dto.DepositRequest;
 import com.bankofcli.bank_api.dto.TransactionResponse;
 import com.bankofcli.bank_api.dto.TransferRequest;
+import com.bankofcli.bank_api.security.CurrentUser;
 import com.bankofcli.bank_api.service.ActivityService;
+import com.bankofcli.bank_api.service.TransactionService;
 import com.bankofcli.bank_api.service.TransferService;
 
 import jakarta.validation.Valid;
@@ -26,10 +29,21 @@ import jakarta.validation.Valid;
 public class TransactionController {
     private final TransferService transferService;
     private final ActivityService activityService;
+    private final TransactionService transactionService;
+    private final CurrentUser currentUser;
 
-    public TransactionController(TransferService transferService, ActivityService activityService) {
+    public TransactionController(TransferService transferService, ActivityService activityService,
+            TransactionService transactionService, CurrentUser currentUser) {
         this.transferService = transferService;
         this.activityService = activityService;
+        this.transactionService = transactionService;
+        this.currentUser = currentUser;
+    }
+
+    @PostMapping("/deposit")
+    @ResponseStatus(HttpStatus.CREATED)
+    public TransactionResponse deposit(@Valid @RequestBody DepositRequest request, Authentication auth) {
+        return transactionService.deposit(currentUser.id(auth), request);
     }
 
     @PostMapping("/transfer")
