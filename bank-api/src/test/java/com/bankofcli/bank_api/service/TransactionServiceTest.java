@@ -28,13 +28,14 @@ class TransactionServiceTest {
     private TransactionRepository transactionRepo;
     private AccountRepository accountRepo;
     private TransactionService service;
+    private AccountService accountService;
     private Account aliceAccount;
 
     @BeforeEach
     void setUp() {
         transactionRepo = mock(TransactionRepository.class);
         accountRepo = mock(AccountRepository.class);
-        service = new TransactionService(transactionRepo, accountRepo);
+        service = new TransactionService(transactionRepo, accountRepo, accountService);
 
         // Alice owns account 1000001234 with $100.00. Ids normally come from the database.
         User alice = new User("Alice", "Smith", "asmith1234", "alice@bank.com", "hash");
