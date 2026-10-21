@@ -1,131 +1,61 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import {
   User,
   LoginRequest,
   RegisterRequest,
-  UpdateProfileRequest,   // NEW
+  UpdateProfileRequest,
   AuthResponse,
   ApiResponse
 } from '../models';
-import users from '../mock/users.json';
-import credentials from '../mock/credentials.json';
+import { toApiResponse } from '../utils/api-result';
 import { CurrentUserService } from './current.user.services';
+
+const TOKEN_KEY = 'authToken'; // must match auth.interceptor.ts
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+  private http = inject(HttpClient);
   private currentUserService = inject(CurrentUserService);
-  private users: User[] = users;
+  private api = environment.apiUrl;
 
-  private credentials: {
-    userId: string;
-    password: string;
-  }[] = credentials;
-
-  private currentUser: User | null = null;
-
-  login(request: LoginRequest): ApiResponse<AuthResponse> {
-
-    const credential = this.credentials.find(
-      (item) =>
-        item.userId === request.identifier ||
-        this.findUserById(item.userId)?.email === request.identifier
+  login(request: LoginRequest): Observable<ApiResponse<AuthResponse>> {
+    return toApiResponse(
+      this.http.post<AuthResponse>(`${this.api}/auth/login`, {
+        // usernames n emails are stored lowercase!
+        identifier: request.identifier.trim().toLowerCase(),
+        password: request.password,
+      }),
+    ).pipe(
+      tap((response) => {
+        if(response.success && response.data) {
+          this.startSession(response.data);
+        }
+      }),
     );
-
-    if (!credential || credential.password !== request.password) {
-      return {
-        success: false,
-        error: {
-          code: 'INVALID_CREDENTIALS',
-          message: 'Invalid email, user ID, or password.'
-        }
-      };
-    }
-
-    const user = this.findUserById(credential.userId);
-
-    if (!user) {
-      return {
-        success: false,
-        error: {
-          code: 'UNAUTHORIZED',
-          message: 'User could not be found.'
-        }
-      };
-    }
-
-    this.currentUser = user;
-    this.currentUserService.setUser(user);
-
-    // Save the logged-in user in the browser for route protection.
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('currentUser', JSON.stringify(user));
-    }
-
-    return {
-      success: true,
-      data: {
-        user,
-        token: `mock-token-${user.id}`
-      }
-    };
   }
 
-  register(request: RegisterRequest): ApiResponse<User> {
-
-    const emailExists = this.users.some(
-      (user) => user.email.toLowerCase() === request.email.toLowerCase()
+  // the backend also creats the users $0 account
+  // we dont log in here: the page shows the new username, then sends the user to login
+  register(request: RegisterRequest): Observable<ApiResponse<AuthResponse>> {
+    return toApiResponse(
+      this.http.post<AuthResponse>(`${this.api}/auth/register`, request),
     );
-
-    if (emailExists) {
-      return {
-        success: false,
-        error: {
-          code: 'EMAIL_ALREADY_TAKEN',
-          message: 'An account with this email already exists.'
-        }
-      };
-    }
-
-    const newUserId = this.generateUserId(
-      request.firstName,
-      request.lastName
-    );
-
-    const newUser: User = {
-      id: newUserId,
-      firstName: request.firstName,
-      lastName: request.lastName,
-      email: request.email
-    };
-
-    this.users.push(newUser);
-
-    this.credentials.push({
-      userId: newUserId,
-      password: request.password
-    });
-
-    return {
-      success: true,
-      data: newUser
-    };
   }
 
-  // NEW: used by the profile page
+  // the backend has no profile endpoint, so changes only live in this browser only
   updateProfile(userId: string, changes: UpdateProfileRequest): ApiResponse<User> {
+    const user = this.getCurrentUser();
 
-    const index = this.users.findIndex((user) => user.id === userId);
-
-    if (index === -1) {
+    if (!user || user.id !== userId) {
       return {
         success: false,
-        error: {
-          code: 'UNAUTHORIZED',
-          message: 'User could not be found.'
-        }
+        error: { code: 'UNAUTHORIZED', message: 'User could not be found.' }
       };
     }
 
@@ -136,98 +66,45 @@ export class AuthService {
     if (!firstName || !lastName || !email) {
       return {
         success: false,
-        error: {
-          code: 'VALIDATION_ERROR',
-          message: 'First name, last name and email are required.'
-        }
-      };
-    }
-
-    const emailTaken = this.users.some(
-      (user) =>
-        user.id !== userId &&
-        user.email.toLowerCase() === email.toLowerCase()
-    );
-
-    if (emailTaken) {
-      return {
-        success: false,
-        error: {
-          code: 'EMAIL_ALREADY_TAKEN',
-          message: 'An account with this email already exists.'
-        }
+        error: { code: 'VALIDATION_ERROR', message: 'First name, last name and email are required.' }
       };
     }
 
     const updated: User = {
-      ...this.users[index],
+      ...user,
       firstName,
       lastName,
       email,
       ...(changes.gender ? { gender: changes.gender } : {})
     };
 
-    this.users[index] = updated;
-    this.currentUser = updated;
-    this.currentUserService.setUser(updated); // navbar and welcome cards update immediately
+    this.currentUserService.setUser(updated);
+    return { success: true, data: updated };
+  }
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('currentUser', JSON.stringify(updated));
-    }
-
-    return {
-      success: true,
-      data: updated
-    };
+  isLoggedIn(): boolean {
+    return this.getToken() !== null;
   }
 
   getCurrentUser(): User | null {
-
-    if (this.currentUser) {
-      return this.currentUser;
-    }
-
-    if (typeof window !== 'undefined') {
-      const storedUser = localStorage.getItem('currentUser');
-
-      if (storedUser) {
-        this.currentUser = JSON.parse(storedUser);
-      }
-    }
-
-    return this.currentUser;
+    return this.currentUserService.user();
   }
 
   logout(): void {
-    this.currentUser = null;
-    this.currentUserService.setUser(null);
-
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('currentUser');
+      localStorage.removeItem(TOKEN_KEY);
     }
+    this.currentUserService.setUser(null);
   }
 
-  private findUserById(userId: string): User | undefined {
-    return this.users.find((user) => user.id === userId);
+  private getToken(): string | null {
+    return typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null;
   }
 
-
-  private generateUserId(
-    firstName: string,
-    lastName: string
-  ): string {
-    const firstInitial = firstName.charAt(0).toUpperCase();
-    const lastInitial = lastName.charAt(0).toUpperCase();
-
-    // Find the highest four-digit ID sequence already used.
-    const existingNumbers = this.users
-      .map((user) => user.id.match(/^[A-Z]{2}(\d{4})$/))
-      .filter((match): match is RegExpMatchArray => match !== null)
-      .map((match) => Number(match[1]));
-
-    const nextNumber = Math.max(0, ...existingNumbers) + 1;
-    const sequence = String(nextNumber).padStart(4, '0');
-
-    return `${firstInitial}${lastInitial}${sequence}`;
+  private startSession(response: AuthResponse): void {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(TOKEN_KEY, response.token);
+    }
+    this.currentUserService.setUser(response.user);
   }
 }

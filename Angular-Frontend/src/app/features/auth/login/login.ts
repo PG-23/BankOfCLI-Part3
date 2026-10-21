@@ -23,35 +23,34 @@ export class Login {
   isLoading = false;
   showPassword = signal(false);
 
-  onLogin(): void {
+   onLogin(): void {
     this.errorMessage = '';
 
     if (!this.identifier.trim() || !this.password.trim()) {
-      this.errorMessage = 'Please enter your email or user ID and password.';
+      this.errorMessage = 'Please enter your email or username and password.';
       return;
     }
 
     this.isLoading = true;
 
-    // Simulate a short server response delay.
-    setTimeout(() => {
-      const response = this.authService.login({
-        identifier: this.identifier.trim(),
+    this.authService
+      .login({
+        identifier: this.identifier,
         password: this.password,
-      });
-
-      if (!response.success) {
+      })
+      .subscribe((response) => {
         this.isLoading = false;
-        this.errorMessage =
-          response.error?.message ?? 'Unable to log in.';
 
-        this.cdr.detectChanges();
-        return;
-      }
+        if (!response.success) {
+          this.errorMessage =
+            response.error?.message ?? 'Unable to log in.';
 
-      this.isLoading = false;
-      this.router.navigate(['/dashboard']);
-    }, 700);
+          this.cdr.detectChanges();
+          return;
+        }
+
+        this.router.navigate(['/dashboard']);
+      });
   }
 
   goToRegister(): void {
