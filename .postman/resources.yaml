@@ -1,0 +1,15 @@
+# Use this workspace to collaborate
+workspace:
+  id: 807b8515-8904-4488-8705-628080f97350
+
+# Each entry here maps a local resource to one or more corresponding objects in Postman Cloud
+
+cloudResources:
+  collections:
+    ../postman/collections/Bank of CLI Part 3 - Shared API Tests: 61206154-0a5b-4b80-8a62-928596f69fc2
+
+# All resources in the `postman/` folder are automatically registered in Local View.
+# Point to additional files outside the `postman/` folder to register them individually. Example:
+#localResources:
+#  collections:
+#    - ../tests/E2E Test Collection/
