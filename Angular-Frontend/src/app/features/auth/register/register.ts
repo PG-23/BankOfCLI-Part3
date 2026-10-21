@@ -26,12 +26,12 @@ export class Register {
   errorMessage = '';
   isLoading = false;
 
-  // Terms and policy state
+  // terms n policy state
   termsAccepted = false;
   termsError = false;
   activePolicy: 'terms' | 'privacy' | null = null;
 
-  // Username success popup
+  // username success popup
   createdUserId = '';
   showUsernamePopup = false;
 
@@ -84,26 +84,14 @@ export class Register {
       return;
     }
 
-    if (this.password.length < 4) {
-      this.errorMessage = 'Password must be at least 4 characters.';
+    // same rule as the backend: at least 8 characters, including a number
+    if (this.password.length < 8) {
+      this.errorMessage = 'Password must be at least 8 characters.';
       return;
     }
 
-    if (!/[A-Z]/.test(this.password)) {
-      this.errorMessage =
-        'Password must contain at least one uppercase letter.';
-      return;
-    }
-
-    if (!/[a-z]/.test(this.password)) {
-      this.errorMessage =
-        'Password must contain at least one lowercase letter.';
-      return;
-    }
-
-    if (!/[^A-Za-z0-9]/.test(this.password)) {
-      this.errorMessage =
-        'Password must contain at least one special character.';
+    if (!/\d/.test(this.password)) {
+      this.errorMessage = 'Password must contain at least one number.';
       return;
     }
 
@@ -112,43 +100,33 @@ export class Register {
       return;
     }
 
-    // Simulate a server request
     this.isLoading = true;
 
-    setTimeout(() => {
-      const response = this.authService.register({
+    this.authService
+      .register({
         firstName: this.firstName.trim(),
         lastName: this.lastName.trim(),
         email: this.email.trim(),
         password: this.password,
+      })
+      .subscribe((response) => {
+        this.isLoading = false;
+
+        if (!response.success || !response.data) {
+          this.errorMessage =
+            response.error?.message ?? 'Unable to create your account.';
+          this.cdr.detectChanges();
+          return;
+        }
+
+        // display the username the backend generated, ex: "jdoe4821"
+        this.createdUserId = response.data.user.username;
+        this.showUsernamePopup = true;
+        this.cdr.detectChanges();
       });
-
-      if (!response.success) {
-        this.isLoading = false;
-        this.errorMessage =
-          response.error?.message ?? 'Unable to create your account.';
-        this.cdr.detectChanges();
-        return;
-      }
-
-      // Make sure the response includes the new user
-      if (!response.data) {
-        this.isLoading = false;
-        this.errorMessage =
-          'Account was created, but the username could not be retrieved.';
-        this.cdr.detectChanges();
-        return;
-      }
-
-      // Display the generated username
-      this.isLoading = false;
-      this.createdUserId = response.data.id;
-      this.showUsernamePopup = true;
-      this.cdr.detectChanges();
-    }, 700);
   }
 
-  // Close the success popup and continue to Login
+  // close the success popup and continue to login
   continueToLogin(): void {
     this.showUsernamePopup = false;
     this.router.navigate(['/login']);
