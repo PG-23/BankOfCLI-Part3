@@ -5,7 +5,7 @@ import { useRef, useState, type FormEvent, type ReactNode } from 'react';
 import type { ApiError, RecipientLookup, TransactionResponse } from '../../models';
 import { useAuth } from '../../hooks/useAuth';
 import { lookupRecipient, transfer } from '../../services/transferService';
-import { isValidAccountNumber,isValidReference } from '../../utils/validation';
+import { isValidAccountNumber,isValidNote } from '../../utils/validation';
 import { FormField } from '../FormField';
 import { formatCents, parseDollarsToCents } from '../../utils/money';
 import { RecipientCard } from './RecipientCard';
@@ -22,13 +22,13 @@ import { notify } from '../../utils/notify';
 type LookupStatus = 'idle' | 'checking' | 'verified' | 'error';
 
 // The inputs that can show an error underneath. Matches the "field" values in transferService.
-type FieldName = 'toAccountNumber' | 'amount' | 'reference';
+type FieldName = 'toAccountNumber' | 'amountCents' | 'note';
 
 // Everything the review screen needs, captured when "Review transfer details" passes
 interface ReviewData {
   recipient: RecipientLookup;
   amountCents: number;
-  reference: string;
+  note: string;
   reviewedAt: Date;
 }
 
@@ -43,7 +43,7 @@ export function TransferForm() {
   const [lookupStatus, setLookupStatus] = useState<LookupStatus>('idle');
   const [errors, setErrors] = useState<Partial<Record<FieldName, string>>>({}); // one message per input
   const [amount, setAmount] = useState('');        // what the user typed, e.g. "650" or "$1,250.50"
-  const [reference, setReference] = useState('');  // e.g. "October rent"
+  const [note, setNote] = useState('');  // e.g. "October rent"
   const [review, setReview] = useState<ReviewData | null>(null); // null = show the form, set = show the review screen
   const [isSubmitting, setIsSubmitting] = useState(false);  //true while transfer() runs
   const [serverError, setServerError] = useState<string | null>(null); //error with no field
@@ -99,7 +99,7 @@ export function TransferForm() {
 // ---------- Amount input ----------
  function handleAmountChange(value: string) {
     setAmount(value);
-    setFieldError('amount');
+    setFieldError('amountCents');
   }
 // Leaving the input: check the amount is valid and affordable
 function handleAmountBlur() {
@@ -107,17 +107,17 @@ function handleAmountBlur() {
 
     const cents = parseDollarsToCents(amount);
     if(cents === null){
-        setFieldError('amount','Enter a valid amount, e.g. 25 or 25.50.');
+        setFieldError('amountCents','Enter a valid amount, e.g. 25 or 25.50.');
 
     }else if(account && cents > account.balanceCents){
-        setFieldError('amount','Insufficient balance for this transfer.');
+        setFieldError('amountCents','Insufficient balance for this transfer.');
     }
 }
 
-// ---------- Reference input ----------
-function handleReferenceChange(value:string){
-    setReference(value);
-    setFieldError('reference');
+// ---------- Note input (labelled "Transfer reference") ----------
+function handleNoteChange(value:string){
+    setNote(value);
+    setFieldError('note');
 }
 
   // What to show on the right inside the account input
@@ -152,26 +152,26 @@ function validateAll():boolean{
         next.toAccountNumber = errors.toAccountNumber ?? 'No account found with this number.';
     }
 
-    //Reference:required, up to 140 characters 
-    if(reference.trim() === ''){
-        next.reference = 'Enter a transfer reference.';
-    }else if(!isValidReference(reference)){
-        next.reference = 'Reference must be 140 characters or fewer.';
+    //Note: required, up to 140 characters 
+    if(note.trim() === ''){
+        next.note = 'Enter a transfer reference.';
+    }else if(!isValidNote(note)){
+        next.note = 'Reference must be 140 characters or fewer.';
     }
     // Amount: required, a valid number, and not more than the balance
     const cents = parseDollarsToCents(amount);
     if (amount.trim() === '') {
-      next.amount = 'Enter an amount.';
+      next.amountCents = 'Enter an amount.';
     } else if (cents === null) {
-      next.amount = 'Enter a valid amount, e.g. 25 or 25.50.';
+      next.amountCents = 'Enter a valid amount, e.g. 25 or 25.50.';
     } else if (account && cents > account.balanceCents) {
-      next.amount = 'Insufficient balance for this transfer.';
+      next.amountCents = 'Insufficient balance for this transfer.';
     }
 
     setErrors(next); // replaces all old errors with the new ones
 
     // Move the cursor to the first field with an error (in screen order)
-    const firstError = (['toAccountNumber', 'reference', 'amount'] as FieldName[]).find(f => next[f]);
+    const firstError = (['toAccountNumber', 'note', 'amountCents'] as FieldName[]).find(f => next[f]);
     if (firstError) document.getElementById(firstError)?.focus();
 
     return firstError === undefined; // no errors = valid
@@ -182,12 +182,12 @@ function validateAll():boolean{
     if (!validateAll()) return;
 
     // Part 4 replaces this with the review screen
-    //console.log('Valid — ready for review', { toAccount, amount, reference, recipient });
+    //console.log('Valid — ready for review', { toAccount, amount, note, recipient });
       // validateAll() passed, so recipient and the amount are guaranteed valid here (hence the "!")
     setReview({
       recipient: recipient!,
       amountCents: parseDollarsToCents(amount)!,
-      reference: reference.trim(),
+      note: note.trim(),
       reviewedAt: new Date(),
     });
   }
@@ -202,7 +202,7 @@ async function handleConfirm(){
       fromAccountNumber: account.accountNumber,
       toAccountNumber:review.recipient.accountNumber,
       amountCents:review.amountCents,
-      reference:review.reference,
+      note: review.note,
     });
     setResult(res); // switches to the success screen
     updateBalance(res.newBalanceCents); // update the balance everywhere on the page
@@ -235,7 +235,7 @@ function startNewTransfer(){
   setRecipient(null);
   setLookupStatus('idle');
   setAmount('');
-  setReference('');
+  setNote('');
   setErrors({});
   setReview(null);
   setServerError(null);
@@ -262,7 +262,7 @@ if(result && review){
       <TransferReview
         recipient={review.recipient}
         amountCents={review.amountCents}
-        reference={review.reference}
+        note={review.note}
         reviewedAt={review.reviewedAt}
         onBack={() => { setServerError(null); setReview(null); }}
         onConfirm={handleConfirm}
@@ -333,21 +333,21 @@ if(result && review){
 
         {/* Row 2, left: transfer reference */}
         <FormField
-          id="reference"
+          id="note"
           label="Transfer reference"
           icon="chat-left-text"
           required
-          maxLength={140}              // same limit as isValidReference
+          maxLength={140}              // same limit as isValidNote
           placeholder="e.g. October rent"
-          value={reference}
-          onChange={handleReferenceChange}
+          value={note}
+          onChange={handleNoteChange}
           helperText="Shown to you and the recipient on account statements."
-          error={errors.reference}
+          error={errors.note}
         />
 
         {/* Row 2, right: amount */}
         <FormField
-          id="amount"
+          id="amountCents"
           label="Amount"
           icon="currency-dollar"
           required
@@ -358,7 +358,7 @@ if(result && review){
           onBlur={handleAmountBlur}
           // Shows the sender's balance as a hint, e.g. "Available balance: $2,500.00"
           helperText={account ? `Available balance: ${formatCents(account.balanceCents)}` : undefined}
-          error={errors.amount}
+          error={errors.amountCents}
         />
       </div>
 

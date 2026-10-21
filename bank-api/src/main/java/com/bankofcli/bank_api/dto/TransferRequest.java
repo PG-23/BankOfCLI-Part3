@@ -13,7 +13,7 @@ public class TransferRequest{
      @NotBlank 
     private String toAccountNumber;
 
-     @NotNull
+    @NotNull
     private long amountCents;
 
     private String note;
