@@ -8,101 +8,119 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class GlobalExceptionHandlerTest {
 
-    // TEST 1: Verify regular validation errors return VALIDATION_ERROR.
     @Test
     void shouldReturnValidationError() {
 
-        // Simulate a request with an invalid amount.
         Object request = new Object();
 
         var bindingResult =
-            new BeanPropertyBindingResult(request, "request");
+                new BeanPropertyBindingResult(request, "request");
 
         bindingResult.addError(new FieldError(
-            "request",
-            "amountCents",
-            "Amount must be greater than zero."
+                "request",
+                "amountCents",
+                "Amount must be greater than zero."
         ));
 
-        // Create a simulated validation exception.
         var exception = new MethodArgumentNotValidException(
-            null,
-            bindingResult
+                null,
+                bindingResult
         );
 
-        // Call the global exception handler.
         var handler = new GlobalExceptionHandler();
 
         ResponseEntity<ApiError> response =
-            handler.handleValidation(exception);
+                handler.handleValidation(exception);
 
-        // Verify the HTTP status is 400 Bad Request.
         assertEquals(
-            HttpStatus.BAD_REQUEST,
-            response.getStatusCode()
+                HttpStatus.BAD_REQUEST,
+                response.getStatusCode()
         );
 
-        // Verify the error response.
         ApiError error = response.getBody();
         assertNotNull(error);
 
         assertEquals("VALIDATION_ERROR", error.code());
         assertEquals("amountCents", error.field());
         assertEquals(
-            "Amount must be greater than zero.",
-            error.message()
+                "Amount must be greater than zero.",
+                error.message()
         );
     }
 
-    // TEST 2: Verify password errors return WEAK_PASSWORD.
     @Test
     void shouldReturnWeakPasswordError() {
 
-        // Simulate a request with an invalid password.
         Object request = new Object();
 
         var bindingResult =
-            new BeanPropertyBindingResult(request, "request");
+                new BeanPropertyBindingResult(request, "request");
 
         bindingResult.addError(new FieldError(
-            "request",
-            "password",
-            "Password does not meet requirements."
+                "request",
+                "password",
+                "Password does not meet requirements."
         ));
 
-        // Create a simulated validation exception.
         var exception = new MethodArgumentNotValidException(
-            null,
-            bindingResult
+                null,
+                bindingResult
         );
 
-        // Call the global exception handler.
         var handler = new GlobalExceptionHandler();
 
         ResponseEntity<ApiError> response =
-            handler.handleValidation(exception);
+                handler.handleValidation(exception);
 
-        // Verify the HTTP status is 400 Bad Request.
         assertEquals(
-            HttpStatus.BAD_REQUEST,
-            response.getStatusCode()
+                HttpStatus.BAD_REQUEST,
+                response.getStatusCode()
         );
 
-        // Verify the password-specific error response.
         ApiError error = response.getBody();
         assertNotNull(error);
 
         assertEquals("WEAK_PASSWORD", error.code());
         assertEquals("password", error.field());
         assertEquals(
-            "Password does not meet requirements.",
-            error.message()
+                "Password does not meet requirements.",
+                error.message()
         );
+    }
+
+    @Test
+    void shouldReturnMethodNotAllowedError() {
+
+        var exception =
+                new HttpRequestMethodNotSupportedException("POST");
+
+        var handler = new GlobalExceptionHandler();
+
+        ResponseEntity<ApiError> response =
+                handler.handleMethodNotAllowed(exception);
+
+        assertEquals(
+                HttpStatus.METHOD_NOT_ALLOWED,
+                response.getStatusCode()
+        );
+
+        ApiError error = response.getBody();
+        assertNotNull(error);
+
+        assertEquals("VALIDATION_ERROR", error.code());
+
+        assertEquals(
+                "HTTP method is not supported for this endpoint.",
+                error.message()
+        );
+
+        assertNull(error.field());
     }
 }
