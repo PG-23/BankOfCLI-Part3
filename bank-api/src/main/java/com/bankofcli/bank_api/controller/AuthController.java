@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bankofcli.bank_api.dto.AuthResponse;
+import com.bankofcli.bank_api.dto.LoginRequest;
 import com.bankofcli.bank_api.dto.RegisterRequest;
 import com.bankofcli.bank_api.service.AuthService;
 
@@ -27,5 +28,11 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
         return authService.register(request);
+    }
+
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 }
