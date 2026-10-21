@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bankofcli.bank_api.dto.ActivityResponse;
+import com.bankofcli.bank_api.dto.DepositRequest;
 import com.bankofcli.bank_api.dto.TransactionResponse;
 import com.bankofcli.bank_api.dto.TransferRequest;
 import com.bankofcli.bank_api.dto.WithdrawRequest;
 
+import com.bankofcli.bank_api.security.CurrentUser;
 import com.bankofcli.bank_api.service.ActivityService;
+import com.bankofcli.bank_api.service.TransactionService;
 import com.bankofcli.bank_api.service.TransferService;
 import com.bankofcli.bank_api.service.WithdrawalService;
 
@@ -32,17 +35,23 @@ public class TransactionController {
     // Services that handle the business logic
     private final TransferService transferService;
     private final ActivityService activityService;
+    private final TransactionService transactionService;
+    private final CurrentUser currentUser;
     private final WithdrawalService withdrawalService;
 
-    // Constructor injection
-    public TransactionController(
-            TransferService transferService,
-            ActivityService activityService,
-            WithdrawalService withdrawalService) {
-
+    public TransactionController(TransferService transferService, ActivityService activityService,
+            TransactionService transactionService, WithdrawalService withdrawalService, CurrentUser currentUser) {
         this.transferService = transferService;
         this.activityService = activityService;
+        this.transactionService = transactionService;
         this.withdrawalService = withdrawalService;
+        this.currentUser = currentUser;
+    }
+
+    @PostMapping("/deposit")
+    @ResponseStatus(HttpStatus.CREATED)
+    public TransactionResponse deposit(@Valid @RequestBody DepositRequest request, Authentication auth) {
+        return transactionService.deposit(currentUser.id(auth), request);
     }
 
     // ==========================================
