@@ -11,6 +11,7 @@ import java.time.OffsetDateTime;
 
 import com.bankofcli.bank_api.model.Account;
 import com.bankofcli.bank_api.model.Transaction;
+import com.bankofcli.bank_api.model.TransactionType;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
@@ -28,12 +29,18 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     //Every transaction where this account sent OR received money,since the given time oldest first
     @Query("""
             SELECT t FROM Transaction t
-            WHERE(t.fromAccount = :account OR t.toAccount = :account)
-                AND t.timestamp >= :since
-            ORDER BY t.timestamp ASC
-
+            WHERE (t.fromAccount.id = :accountId OR t.toAccount.id = :accountId)
+            AND t.type = :filter
             """)
-            
+    
+    Page<Transaction> getFilteredPageFromAccountId(@Param("accountId") long accountId, Pageable pageable, @Param("filter") TransactionType filter);
+    //Every transaction where this account sent OR received money,since the given time oldest first
+    @Query("""
+            SELECT t FROM Transaction t
+            WHERE (t.fromAccount.id = :accountId OR t.toAccount.id = :accountId)
+            AND t.type = :filter
+            """)
+
     List<Transaction> findActivitySince(@Param("account") Account account,
                                         @Param("since") OffsetDateTime since);
 }

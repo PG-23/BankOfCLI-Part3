@@ -69,9 +69,17 @@ public class TransactionService {
 
     // This is the service that React needs to use to get pages transaction lists. 
     @Transactional   (readOnly = true)
-    public Page<TransactionDto> getAllTransactionPaginated(long userId, Pageable pageable){
+    public Page<TransactionDto> getAllTransactionPaginated(long userId, Pageable pageable, String type){
         long accountId = accountService.getAccountByUserId(userId).getId();
-        Page<Transaction> transactions = transactionRepo.getPageFromAccountId(accountId, pageable);
+        Page<Transaction> transactions;
+
+        if("all".equals(type))
+            transactions = transactionRepo.getPageFromAccountId(accountId, pageable);
+        else{
+            TransactionType filter = TransactionType.valueOf(type.toUpperCase());
+            transactions = transactionRepo.getFilteredPageFromAccountId(accountId, pageable, filter);
+        }
+
         return transactions.map(TransactionDto::from);
     }
 

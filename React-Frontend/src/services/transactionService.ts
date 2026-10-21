@@ -17,10 +17,11 @@ type SpringPage<T> = {
 };
 
 export async function getTransactionsFromId(
-    page: number = 0
+    page: number = 0,
+    type: TransactionFilter = "all",
 ): Promise<PaginatedTransactions> {
     const response = await api.get<SpringPage<Transaction>>(
-        `/transactions/paged?page=${page}&size=${PAGE_SIZE}`
+        `/transactions/paged?page=${page}&size=${PAGE_SIZE}&type=${type}`,
     );
 
     return {

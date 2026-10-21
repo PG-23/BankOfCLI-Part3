@@ -43,7 +43,7 @@ function TransferHistory() {
             setLoading(true);
             try {
                 const result = await getTransactionsFromId(
-                    page
+                    page, filter
                 );
                 if (cancelled) return;
                 setTransactions(result.transactions);
