@@ -9,7 +9,7 @@ export const isValidName = (name: string) => /[a-zA-Z]/.test(name);
 export const isValidAccountNumber = (value:string) =>
   /^\d{10}$/.test(value.replace(/\s/g, ''));
 
-export const isValidReference = (value: string) =>{
+export const isValidNote = (value: string) =>{
   const trimmed = value.trim();
   return trimmed.length >= 1 && trimmed.length <= 140;
 };
