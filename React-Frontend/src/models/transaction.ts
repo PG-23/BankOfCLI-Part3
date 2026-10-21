@@ -6,7 +6,7 @@ export interface Transaction {
   amountCents: number;              // integer, always positive
   fromAccountNumber: string | null; // null for deposits
   toAccountNumber: string | null;   // null for withdrawals
-  reference?:string;                // transfer only
+  note?: string | null;             // transfer only (shown as "Reference")
   timestamp: string;                // ISO 8601
 }
 
@@ -24,7 +24,7 @@ export interface TransferRequest {
   fromAccountNumber: string;
   toAccountNumber: string;
   amountCents: number;
-  reference:string;
+  note: string;
 }
 
 export interface RecipientLookup {
