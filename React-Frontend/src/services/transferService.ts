@@ -1,14 +1,12 @@
-import type { RecipientLookup,Transaction,TransactionResponse,TransferRequest } from "../models";
+import type { RecipientLookup,TransactionResponse,TransferRequest } from "../models";
 import { api, ApiRequestError } from './apiClient';
 import { isValidAccountNumber } from "../utils/validation";
 
-//The backend names some error fields differently from the form's inputs.
-// Renaming them lets TransferForm show error under the right input.
-
+// The recipient lookup reports its error on "accountNumber", but on the
+// transfer form that input is "toAccountNumber". Renaming it lets
+// TransferForm show the error under the right input.
 const FORM_FIELD: Record<string, string> = {
     accountNumber: 'toAccountNumber',
-    amountCents: 'amount',
-    note:'reference',
 };
 
 function rethrowWithFormField(err:unknown): never {
@@ -17,9 +15,6 @@ function rethrowWithFormField(err:unknown): never {
     }
     throw err;
 }
-
-//The backend calls the transfer reference "note"
-type ServerTransaction = Omit<Transaction,'reference'> & {note?: string | null};
 
 //GET / accounts/{accountNumber} ->the recipient's name ,before the user confirms
 export async function lookupRecipient(accountNumber:string,fromAccountNumber:string):Promise<RecipientLookup>{
@@ -45,23 +40,15 @@ export async function lookupRecipient(accountNumber:string,fromAccountNumber:str
 //Post/transactions/transfer -> moves the money ; the backend does all the real checks
 export async function transfer(req:TransferRequest): Promise<TransactionResponse>{
     try{
-        const res = await api.post<{transaction: ServerTransaction;newBalanceCents:number}>(
+        return await api.post<TransactionResponse>(
             '/transactions/transfer',
             {
                 fromAccountNumber:req.fromAccountNumber,
                 toAccountNumber:req.toAccountNumber.replace(/\s/g,''),
                 amountCents:req.amountCents,
-                note:req.reference.trim(),
-
-
+                note:req.note.trim(),
             },
         );
-        //Rename note-> reference so that rest of the UI works unchanged
-        const { note, ...rest } = res.transaction;
-        return{
-            transaction:{...rest,reference:note ?? undefined},
-            newBalanceCents:res.newBalanceCents,
-        };
 
     } catch(err){
         return rethrowWithFormField(err);
