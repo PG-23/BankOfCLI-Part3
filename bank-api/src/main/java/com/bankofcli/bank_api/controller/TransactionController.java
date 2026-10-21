@@ -1,3 +1,4 @@
+
 package com.bankofcli.bank_api.controller;
 
 import java.time.OffsetDateTime;
@@ -18,8 +19,17 @@ import com.bankofcli.bank_api.dto.TransactionResponse;
 import com.bankofcli.bank_api.dto.TransferRequest;
 import com.bankofcli.bank_api.service.TransactionService;
 import com.bankofcli.bank_api.dto.ActivityResponse;
+import com.bankofcli.bank_api.dto.ActivityResponse;
+import com.bankofcli.bank_api.dto.DepositRequest;
+import com.bankofcli.bank_api.dto.TransactionResponse;
+import com.bankofcli.bank_api.dto.TransferRequest;
+import com.bankofcli.bank_api.dto.WithdrawRequest;
+
+import com.bankofcli.bank_api.security.CurrentUser;
 import com.bankofcli.bank_api.service.ActivityService;
+import com.bankofcli.bank_api.service.TransactionService;
 import com.bankofcli.bank_api.service.TransferService;
+import com.bankofcli.bank_api.service.WithdrawalService;
 
 import jakarta.validation.Valid;
 
@@ -35,21 +45,44 @@ import org.springframework.security.oauth2.jwt.Jwt;
 @RestController
 @RequestMapping("/transactions")
 public class TransactionController {
+
+    // Services that handle the business logic
     private final TransferService transferService;
     private final ActivityService activityService;
     private final TransactionService transactionService;
+    private final CurrentUser currentUser;
+    private final WithdrawalService withdrawalService;
 
-    public TransactionController(TransferService transferService, ActivityService activityService, TransactionService transactionService) {
+    public TransactionController(TransferService transferService, ActivityService activityService,
+            TransactionService transactionService, WithdrawalService withdrawalService, CurrentUser currentUser) {
         this.transferService = transferService;
         this.activityService = activityService;
         this.transactionService = transactionService;
+        this.withdrawalService = withdrawalService;
+        this.currentUser = currentUser;
     }
+
+    @PostMapping("/deposit")
+    @ResponseStatus(HttpStatus.CREATED)
+    public TransactionResponse deposit(@Valid @RequestBody DepositRequest request, Authentication auth) {
+        return transactionService.deposit(currentUser.id(auth), request);
+    }
+
+    // ==========================================
+    // TRANSFER ENDPOINT
+    // POST /api/transactions/transfer
+    // ==========================================
 
     @PostMapping("/transfer")
     @ResponseStatus(HttpStatus.CREATED)
-    public TransactionResponse transfer(@Valid @RequestBody TransferRequest request, Authentication auth) {
-        // JWT subject is the user's database id
+    public TransactionResponse transfer(
+            @Valid @RequestBody TransferRequest request,
+            Authentication auth) {
+
+        // Get the authenticated user's ID
         Long userId = Long.valueOf(auth.getName());
+
+        // Call the transfer service
         return transferService.transfer(userId, request);
     }
     
@@ -71,13 +104,40 @@ public class TransactionController {
         return transactionService.getAllTransactionPaginated(userId, pageable);
     }
 
-    // GET /api/transactions/activity?
+    // ==========================================
+    // WITHDRAWAL ENDPOINT
+    // POST /api/transactions/withdraw
+    // ==========================================
+
+    @PostMapping("/withdraw")
+    @ResponseStatus(HttpStatus.CREATED)
+    public TransactionResponse withdraw(
+            @Valid @RequestBody WithdrawRequest request,
+            Authentication auth) {
+
+        // Get the authenticated user's ID from the JWT
+        Long userId = Long.valueOf(auth.getName());
+
+        // Call our withdrawal service
+        return withdrawalService.withdraw(userId, request);
+    }
+
+    // ==========================================
+    // ACTIVITY ENDPOINT
+    // GET /api/transactions/activity
+    // ==========================================
+
     @GetMapping("/activity")
     public ActivityResponse activity(
             @RequestParam(required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) OffsetDateTime since,
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            OffsetDateTime since,
             Authentication auth) {
+
+        // Get the authenticated user's ID
         Long userId = Long.valueOf(auth.getName());
+
+        // Get the user's transaction activity
         return activityService.getActivity(userId, since);
     }
 }
