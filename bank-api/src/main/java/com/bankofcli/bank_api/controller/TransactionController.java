@@ -19,15 +19,11 @@ import com.bankofcli.bank_api.dto.TransactionResponse;
 import com.bankofcli.bank_api.dto.TransferRequest;
 import com.bankofcli.bank_api.service.TransactionService;
 import com.bankofcli.bank_api.dto.ActivityResponse;
-import com.bankofcli.bank_api.dto.ActivityResponse;
 import com.bankofcli.bank_api.dto.DepositRequest;
-import com.bankofcli.bank_api.dto.TransactionResponse;
-import com.bankofcli.bank_api.dto.TransferRequest;
 import com.bankofcli.bank_api.dto.WithdrawRequest;
 
 import com.bankofcli.bank_api.security.CurrentUser;
 import com.bankofcli.bank_api.service.ActivityService;
-import com.bankofcli.bank_api.service.TransactionService;
 import com.bankofcli.bank_api.service.TransferService;
 import com.bankofcli.bank_api.service.WithdrawalService;
 
