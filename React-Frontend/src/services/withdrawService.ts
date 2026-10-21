@@ -6,10 +6,10 @@ import type {
   WithdrawRequest
 } from '../models';
 
-import { db, delay } from '../mocks/db';
 import { api } from './apiClient';
+import { isValidCents } from '../utils/money';
 
-// Temporary error helper for the mock account lookup.
+// Helper function for handling validation errors
 function fail(
   code: ApiError['code'],
   message: string,
@@ -18,19 +18,18 @@ function fail(
   throw { code, message, field } satisfies ApiError;
 }
 
-// GET /accounts/:accountNumber
-// Temporarily uses mock data until account API integration is ready.
+// GET /api/account/me
+// Fetch account information from the real backend API
 export async function getWithdrawAccount(
   accountNumber: string
-): Promise<Account> {
+): Promise<Pick<Account, 'accountNumber' | 'balanceCents'>> {
 
-  await delay(350);
+  const account = await api.get<
+    Pick<Account, 'accountNumber' | 'balanceCents'>
+  >('/account/me');
 
-  const account = db.accounts.find(
-    a => a.accountNumber === accountNumber
-  );
-
-  if (!account) {
+  // Verify that the account number matches
+  if (account.accountNumber !== accountNumber) {
     fail(
       'ACCOUNT_NOT_FOUND',
       'The selected account could not be found.',
@@ -38,15 +37,29 @@ export async function getWithdrawAccount(
     );
   }
 
-  return { ...account };
+  return {
+    accountNumber: account.accountNumber,
+    balanceCents: account.balanceCents
+  };
 }
 
-// POST /transactions/withdraw
-// Sends a real request to the Spring Boot backend.
+// POST /api/transactions/withdraw
+// Send the withdrawal request to the Spring Boot backend
 export async function withdraw(
   req: WithdrawRequest
 ): Promise<TransactionResponse> {
 
+  // Validate the withdrawal amount
+  if (!isValidCents(req.amountCents)) {
+    fail(
+      'INVALID_AMOUNT',
+      'Enter a withdrawal amount greater than $0.00.',
+      'amountCents'
+    );
+  }
+
+  // Backend handles balance checks, withdrawal,
+  // database updates, and transaction recording
   return api.post<TransactionResponse>(
     '/transactions/withdraw',
     req
