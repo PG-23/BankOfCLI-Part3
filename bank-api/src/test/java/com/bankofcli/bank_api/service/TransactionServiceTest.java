@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -16,6 +17,7 @@ import com.bankofcli.bank_api.dto.TransactionResponse;
 import com.bankofcli.bank_api.exception.ApiException;
 import com.bankofcli.bank_api.model.Account;
 import com.bankofcli.bank_api.model.Transaction;
+import com.bankofcli.bank_api.model.TransactionType;
 import com.bankofcli.bank_api.model.User;
 import com.bankofcli.bank_api.repository.AccountRepository;
 import com.bankofcli.bank_api.repository.TransactionRepository;
@@ -34,7 +36,7 @@ class TransactionServiceTest {
     void setUp() {
         transactionRepo = mock(TransactionRepository.class);
         accountRepo = mock(AccountRepository.class);
-        service = new TransactionService(transactionRepo, accountRepo);
+        service = new TransactionService(transactionRepo, accountRepo, mock(AccountService.class)); // deposit doesn't use AccountService
 
         // Alice owns account 1000001234 with $100.00. Ids normally come from the database.
         User alice = new User("Alice", "Smith", "asmith1234", "alice@bank.com", "hash");
@@ -117,5 +119,68 @@ class TransactionServiceTest {
         assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatus());
         assertEquals("UNAUTHORIZED", ex.getCode());
         verifyNoInteractions(transactionRepo);
+    }
+
+    // TEST 6: The smallest allowed amount (1 cent) is accepted.
+    @Test
+    void depositAcceptsOneCent() {
+        TransactionResponse response = service.deposit(ALICE_ID, new DepositRequest(ALICE_ACCOUNT, 1L));
+
+        assertEquals(10001, response.getNewBalanceCents());
+    }
+
+    // TEST 7: Two deposits in a row add up.
+    @Test
+    void consecutiveDepositsAccumulate() {
+        service.deposit(ALICE_ID, new DepositRequest(ALICE_ACCOUNT, 2500L));
+        TransactionResponse response = service.deposit(ALICE_ID, new DepositRequest(ALICE_ACCOUNT, 500L));
+
+        assertEquals(13000, response.getNewBalanceCents());
+        verify(transactionRepo, times(2)).save(any(Transaction.class));
+    }
+
+    // TEST 8: The saved row is a DEPOSIT into Alice's account, with no sender and no note.
+    @Test
+    void depositSavesCorrectTransactionRow() {
+        service.deposit(ALICE_ID, new DepositRequest(ALICE_ACCOUNT, 2550L));
+
+        ArgumentCaptor<Transaction> saved = ArgumentCaptor.forClass(Transaction.class);
+        verify(transactionRepo).save(saved.capture());
+        assertEquals(TransactionType.DEPOSIT, saved.getValue().getType());
+        assertEquals(2550, saved.getValue().getAmountCents());
+        assertNull(saved.getValue().getFromAccount());
+        assertSame(aliceAccount, saved.getValue().getToAccount());
+        assertNull(saved.getValue().getNote());
+        assertNotNull(saved.getValue().getTimestamp());
+    }
+
+    // TEST 9: The account row is locked (FOR UPDATE), not read with the plain lookup.
+    @Test
+    void depositLocksTheAccountRow() {
+        service.deposit(ALICE_ID, new DepositRequest(ALICE_ACCOUNT, 2550L));
+
+        verify(accountRepo).findByAccountNumberForUpdate(ALICE_ACCOUNT);
+        verify(accountRepo, never()).findByAccountNumber(any());
+    }
+
+    // TEST 10: An invalid amount is rejected even when the account is someone else's
+    // (amount is checked first, so the account is never looked up).
+    @Test
+    void invalidAmountIsCheckedBeforeOwnership() {
+        ApiException ex = assertThrows(ApiException.class,
+                () -> service.deposit(2L, new DepositRequest(ALICE_ACCOUNT, -1L)));
+
+        assertEquals("INVALID_AMOUNT", ex.getCode());
+        verifyNoInteractions(accountRepo);
+    }
+
+    // TEST 11: The ownership error points the UI at the account number field.
+    @Test
+    void ownershipErrorHasFieldAndMessage() {
+        ApiException ex = assertThrows(ApiException.class,
+                () -> service.deposit(2L, new DepositRequest(ALICE_ACCOUNT, 2550L)));
+
+        assertEquals("accountNumber", ex.getField());
+        assertEquals("You can only deposit to your own account.", ex.getMessage());
     }
 }
