@@ -3,6 +3,9 @@ app:
     secret: ${JWT_SECRET:local-dev-secret-change-me-before-deploying-0000}
     expiration-minutes: 60
 spring:
+  jackson:
+    deserialization:
+      accept-float-as-int: false   # reject 10.5 for whole-number fields (money is integer cents) instead of truncating
   datasource:
     url: jdbc:postgresql://localhost:5432/bankofcli
     username: bankofcli
