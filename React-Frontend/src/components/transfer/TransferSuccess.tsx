@@ -33,7 +33,7 @@ export function TransferSuccess({
             <DetailRow label="Transaction ID" value={transaction.id}/>
             <DetailRow label="Amount" value={formatCents(transaction.amountCents)} />
             <DetailRow label="To" value={recipientName} />
-            <DetailRow label="Reference" value={transaction.reference ?? '-'} />
+            <DetailRow label="Reference" value={transaction.note ?? '-'} />
             <DetailRow label="New balance" value={formatCents(newBalanceCents)} />
         </dl>
         <button

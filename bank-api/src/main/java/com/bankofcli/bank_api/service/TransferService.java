@@ -48,7 +48,7 @@ public class TransferService {
         //Lock both rows,smaller account number first, so A->B and B->A can't deadlock
         boolean fromFirst = fromNumber.compareTo(toNumber) <0;
         Optional<Account> first = accountRepository.findByAccountNumberForUpdate(fromFirst ? fromNumber : toNumber);
-        Optional<Account> second = accountRepository.findByAccountNumberForUpdate(fromFirst ? fromNumber : toNumber);
+        Optional<Account> second = accountRepository.findByAccountNumberForUpdate(fromFirst ? toNumber : fromNumber);
 
         //Sender must exists and belong to the logged-in user;recipient must exist 
         Account from =  (fromFirst ? first:second)
