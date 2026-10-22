@@ -80,7 +80,20 @@ public class TransactionService {
             transactions = transactionRepo.getFilteredPageFromAccountId(accountId, pageable, filter);
         }
 
-        return transactions.map(TransactionDto::from);
+        return transactions.map(transaction -> {
+            TransactionDto dto = TransactionDto.from(transaction);
+
+            if(transaction.getType() == TransactionType.TRANSFER){
+                if(accountId == transaction.getToAccount().getId()){
+                    dto.setCounterpartyName(transaction.getFromAccount().getUser().getFirstName() + " " + transaction.getToAccount().getUser().getLastName());
+                }
+                else{
+                    dto.setCounterpartyName(transaction.getToAccount().getUser().getFirstName() + " " + transaction.getFromAccount().getUser().getLastName());
+                }
+            }
+
+            return dto;
+        });
     }
 
     // Locks the row so concurrent balance changes wait their turn. A missing account and
