@@ -36,8 +36,9 @@ export class Transactions implements OnInit {
 
   private amountRules = [Validators.required, Validators.min(0.01), Validators.pattern(/^\d+(\.\d{1,2})?$/)];
 
-  depositForm = this.fb.group({ amount: ['', this.amountRules], description: [''] });
-  withdrawForm = this.fb.group({ amount: ['', this.amountRules], description: [''] });
+  // only transfers can have a message: the backend doesntt save notes on deposits/withdrawals
+  depositForm = this.fb.group({ amount: ['', this.amountRules] });
+  withdrawForm = this.fb.group({ amount: ['', this.amountRules] });
   transferForm = this.fb.group({
     toAccountNumber: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
     amount: ['', this.amountRules],
@@ -125,18 +126,18 @@ export class Transactions implements OnInit {
 
   onDeposit() {
     if (this.depositForm.invalid) return this.depositForm.markAllAsTouched();
-    const { amount, description } = this.depositForm.getRawValue();
+    const { amount } = this.depositForm.getRawValue();
     this.run(
-      this.service.deposit({ accountId: this.accountId, amount: Number(amount), description: description || undefined }),
+      this.service.deposit({ accountId: this.accountId, amount: Number(amount) }),
       this.depositForm,
     );
   }
 
   onWithdraw() {
     if (this.withdrawForm.invalid) return this.withdrawForm.markAllAsTouched();
-    const { amount, description } = this.withdrawForm.getRawValue();
+    const { amount } = this.withdrawForm.getRawValue();
     this.run(
-      this.service.withdraw({ accountId: this.accountId, amount: Number(amount), description: description || undefined }),
+      this.service.withdraw({ accountId: this.accountId, amount: Number(amount) }),
       this.withdrawForm,
     );
   }
@@ -180,10 +181,12 @@ export class Transactions implements OnInit {
 
   private refresh() {
     this.service.getAccount(this.accountId).subscribe((res) => this.account.set(res.data ?? null));
-    this.service.getRecipients(this.accountId).subscribe((res) => this.recipients.set(res.data ?? []));
     this.service.getTransactions(this.accountId).subscribe((res) => {
-      this.transactions.set(res.data ?? []);
+      const list = res.data ?? [];
+      this.transactions.set(list);
       this.tableLoading.set(false);
+      // quick transfer: people this user has sent money to before
+      this.service.getRecipients(list).subscribe((r) => this.recipients.set(r.data ?? []));
     });
   }
 }

@@ -1,4 +1,3 @@
-
 import {
   ChangeDetectorRef,
   Component,
@@ -17,6 +16,13 @@ import {
   Transaction,
   User,
 } from '../../../core/models';
+
+interface ActivityMonth {
+  month: string;
+  deposits: number;
+  withdrawals: number;
+  transfers: number;
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -61,18 +67,11 @@ export class Dashboard implements OnInit {
     | 'Last 5 Months'
     | 'All Activity' = 'Last 5 Months';
 
-  // Activity chart data
-  // These values are still mock data; the backend does not currently
-  // provide monthly activity summaries.
-  activity = [
-    { month: 'MAY', deposits: 55, withdrawals: 25, transfers: 35 },
-    { month: 'JUN', deposits: 70, withdrawals: 40, transfers: 25 },
-    { month: 'JUL', deposits: 45, withdrawals: 60, transfers: 35 },
-    { month: 'AUG', deposits: 80, withdrawals: 45, transfers: 55 },
-    { month: 'SEP', deposits: 60, withdrawals: 35, transfers: 45 },
-  ];
+  // activity chart data, built from the users real transactions
+  // (dollar totals per month) once they load
+  activity: ActivityMonth[] = [];
 
-  activityMaximum = 100;
+  activityMaximum = 1;
 
   ngOnInit(): void {
     this.loadDashboard();
@@ -126,6 +125,7 @@ export class Dashboard implements OnInit {
 
                 this.checkingTransactions = transactions;
                 this.recentTransactions = transactions.slice(0, 5);
+                this.buildActivity(transactions);
                 this.isLoading = false;
                 this.cdr.detectChanges();
               },
@@ -145,6 +145,59 @@ export class Dashboard implements OnInit {
           this.cdr.detectChanges();
         },
       });
+  }
+
+  // one bar group per month from the oldest transaction up to this month
+  // (at least 5 months, at most 12) w/dollar totals per type
+  private buildActivity(transactions: Transaction[]): void {
+    const now = new Date();
+
+    const oldest = transactions.length > 0
+      ? new Date(transactions[transactions.length - 1].createdAt)
+      : now;
+
+    const monthsWithData =
+      (now.getFullYear() - oldest.getFullYear()) * 12 +
+      (now.getMonth() - oldest.getMonth()) + 1;
+
+    const monthCount = Math.min(12, Math.max(5, monthsWithData));
+
+    const months: (ActivityMonth & { key: string })[] = [];
+
+    for (let i = monthCount - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push({
+        key: `${d.getFullYear()}-${d.getMonth()}`,
+        month: d.toLocaleString('en-US', { month: 'short' }).toUpperCase(),
+        deposits: 0,
+        withdrawals: 0,
+        transfers: 0,
+      });
+    }
+
+    for (const t of transactions) {
+      const d = new Date(t.createdAt);
+      const bucket = months.find((m) => m.key === `${d.getFullYear()}-${d.getMonth()}`);
+
+      if (!bucket) {
+        continue;
+      }
+
+      if (t.type === 'DEPOSIT') {
+        bucket.deposits += t.amount;
+      } else if (t.type === 'WITHDRAW') {
+        bucket.withdrawals += t.amount;
+      } else {
+        bucket.transfers += t.amount;
+      }
+    }
+
+    this.activity = months.map(({ key, ...month }) => month);
+
+    this.activityMaximum = Math.max(
+      1,
+      ...this.activity.flatMap((m) => [m.deposits, m.withdrawals, m.transfers]),
+    );
   }
 
   private clearAccountData(): void {
@@ -294,7 +347,8 @@ export class Dashboard implements OnInit {
 
   // Chart helpers
   getBarHeight(value: number, maximum: number): number {
-    if (maximum <= 0) {
+    // Empty months show no bar
+    if (maximum <= 0 || value <= 0) {
       return 0;
     }
 
