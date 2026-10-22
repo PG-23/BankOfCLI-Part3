@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const accountNumber = session?.account.accountNumber;
   useEffect(() => {
     if (!accountNumber) return;
-    getAccount(accountNumber)
+    getAccount()
         .then(fresh => {
           setSession(prev => {
             if (!prev) return prev;
