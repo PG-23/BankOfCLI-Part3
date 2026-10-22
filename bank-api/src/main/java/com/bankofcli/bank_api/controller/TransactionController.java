@@ -21,7 +21,7 @@ import com.bankofcli.bank_api.service.TransactionService;
 import com.bankofcli.bank_api.dto.ActivityResponse;
 import com.bankofcli.bank_api.dto.DepositRequest;
 import com.bankofcli.bank_api.dto.WithdrawRequest;
-
+import com.bankofcli.bank_api.model.TransactionType;
 import com.bankofcli.bank_api.security.CurrentUser;
 import com.bankofcli.bank_api.service.ActivityService;
 import com.bankofcli.bank_api.service.TransferService;
@@ -31,6 +31,7 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -95,9 +96,9 @@ public class TransactionController {
         size = 5,
         sort = "timestamp",
         direction = Sort.Direction.DESC
-    ) Pageable pageable) {
+    ) Pageable pageable, @RequestParam(name = "type", defaultValue = "all") String type) {
         long userId = Long.parseLong(jwt.getSubject());
-        return transactionService.getAllTransactionPaginated(userId, pageable);
+        return transactionService.getAllTransactionPaginated(userId, pageable, type);
     }
 
     // ==========================================

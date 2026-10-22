@@ -43,13 +43,12 @@ function TransferHistory() {
             setLoading(true);
             try {
                 const result = await getTransactionsFromId(
-                    accountNumber!,
-                    filter,
-                    page,
+                    page, filter
                 );
                 if (cancelled) return;
                 setTransactions(result.transactions);
                 setTotalPages(result.totalPages);
+                console.log(result);
             } catch {
                 if (!cancelled) notify.error("Could not load transactions.");
             } finally {
@@ -121,7 +120,7 @@ function TransferHistory() {
                                     ),
                                 )}
                             </>
-                        ) : transactions.length === 0 ? (
+                        ) : transactions?.length === 0 ? (
                             /* Empty state */
                             <tr>
                                 <td
