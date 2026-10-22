@@ -1,0 +1,190 @@
+<div class="login-page">
+
+  <!-- Top airline header -->
+  <header class="top-header">
+
+    <div class="header-line"></div>
+
+    <div class="brand-mark">
+      <div class="brand-symbol">
+        <span class="wing wing-blue"></span>
+        <span class="wing wing-purple"></span>
+        <span class="wing wing-red"></span>
+      </div>
+
+      <span class="brand-name">BANK OF AIRLINES</span>
+    </div>
+
+    <div class="secure-mark">
+      <span>✓</span>
+    </div>
+
+  </header>
+
+
+  <main class="login-content">
+
+    <!-- Welcome panel -->
+    <section class="welcome-panel">
+
+      <div class="welcome-content">
+
+        <h1>
+          WELCOME<br />
+          TRAVELERS
+        </h1>
+
+        <p>
+          Please log in or<br />
+          Sign up to enter<br />
+          Your dashboard
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- Login panel -->
+    <section class="login-panel">
+
+      <div class="login-container">
+
+        <!-- Login / Sign Up tabs -->
+        <div class="auth-tabs">
+
+          <button type="button" class="auth-tab active">
+            LOGIN
+          </button>
+
+          <button type="button" class="auth-tab" (click)="goToRegister()">
+            SIGN UP
+          </button>
+
+        </div>
+
+
+        <!-- Error message -->
+        @if (errorMessage) {
+        <div class="error-message">
+          <span class="error-icon">!</span>
+          <span>{{ errorMessage }}</span>
+        </div>
+        }
+
+
+        <!-- Login form -->
+        <form class="login-form" (ngSubmit)="onLogin()">
+
+          <!-- Email / User ID -->
+          <div class="form-group">
+
+            <label for="identifier">
+              Email or User ID
+              <span>*</span>
+            </label>
+
+            <input id="identifier" name="identifier" type="text" [(ngModel)]="identifier" autocomplete="username" />
+
+          </div>
+
+
+          <!-- Password -->
+          <div class="form-group">
+
+            <label for="password">
+              Password
+              <span>*</span>
+            </label>
+
+            <div class="password-field">
+              <input id="password" name="password" [type]="showPassword() ? 'text' : 'password'"
+                [(ngModel)]="password" autocomplete="current-password" />
+
+              <button type="button" class="password-toggle"
+                (click)="showPassword.set(!showPassword())"
+                [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+                [attr.aria-pressed]="showPassword()">
+                @if (showPassword()) {
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+                } @else {
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+                }
+              </button>
+            </div>
+
+          </div>
+
+
+          <div class="forgot-password">
+            <button type="button" class="forgot-button">
+              Forgot password?
+            </button>
+          </div>
+
+
+          <!-- Login button -->
+          <div class="login-button-wrapper">
+
+            <button type="submit" class="login-button" [disabled]="isLoading">
+
+              @if (isLoading) {
+              <span class="button-spinner"></span>
+              <span>LOGGING IN...</span>
+              } @else {
+              <span>LOGIN</span>
+              }
+
+            </button>
+
+          </div>
+
+        </form>
+
+
+        <!-- Account options -->
+        <div class="account-options">
+
+          <button type="button" class="account-option" (click)="goToRegister()">
+
+            <div class="option-icon savings-icon">
+              $
+            </div>
+
+            <span>Open a savings account</span>
+
+          </button>
+
+
+          <button type="button" class="account-option" (click)="goToRegister()">
+
+            <div class="option-icon account-icon">
+              $
+            </div>
+
+            <span>Open an account</span>
+
+          </button>
+
+        </div>
+
+
+        <button type="button" class="contact-button">
+          Contact Us
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

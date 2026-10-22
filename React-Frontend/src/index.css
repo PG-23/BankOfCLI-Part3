@@ -1,0 +1,98 @@
+/* ============================================================
+   Bank of CLI — Root Styles / Design Tokens
+   This is the single source of truth for colors, fonts, and sizes.
+   Defined once here — used everywhere via Tailwind utilities
+   (bg-primary, text-heading, etc.)
+   DO NOT hardcode hex values in components — use these tokens.
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  /* ---------- Colors ---------- */
+  /* ---------- Surfaces ---------- */
+  --color-background: #FAF9F7;       /* page background — login, register, dashboard */
+  --color-surface: #FFFFFF;          /* cards, form containers, dropdowns */
+  --color-border: #DEDEDE;           /* input outlines, container borders, dividers */
+
+  /* ---------- Text ---------- */
+  --color-text-main: #1A1A1A;        /* headings, labels, balances, body text */
+  --color-text-muted: #626262;       /* dates, helper text, descriptions — secondary info only */
+
+  /* ---------- Brand ---------- */
+  --color-primary: #009B77;          /* teal — navbar, success icons, deposit chart */
+  --color-primary-strong: #007A5E;   /* primary button background (darker for white text) */
+  --color-primary-hover: #00664F;    /* primary button hover state */
+  --color-secondary: #F47920;        /* orange — secondary actions, transfer chart */
+  --color-highlight: #FF8A80;        /* coral — badges, highlights, withdrawal chart */
+  --color-error: #E8202A;            /* red — invalid inputs, insufficient funds, warnings ONLY */
+  --color-link: #B94E00;             /* text links */
+
+
+   /* ---------- Chart series (validated: color-blind safe, 3:1 on white) ---------- */
+  --color-chart-deposit: #007A5E;    /* deposits bars */
+  --color-chart-withdrawal: #2A78D6; /* withdrawals bars */
+  --color-chart-transfer: #EB6834;   /* outgoing transfers bars */
+
+  /* ---------- Message backgrounds ---------- */
+  --color-success-bg: #E8F6F2;       /* success toast / message background */
+  --color-error-bg: #FFF0F2;         /* error toast / message background */
+
+
+  /* ---------- Login / register background glows ---------- */
+  --color-glow-teal: #D8F3EE;        /* main pale teal glow */
+  --color-glow-peach: #FFF1E8;       /* main warm peach glow */
+  --color-accent-teal: #E6F7F2;      /* soft teal accent */
+  --color-accent-peach: #FFE9DD;     /* soft peach accent */
+
+  /* ---------- Font family ---------- */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+                                     /* Inter everywhere — the default app font */
+
+  /* ---------- Font sizes ---------- */
+  --text-heading: 2rem;              /* 32px — page titles ("Login to Bank of CLI", "Dashboard") */
+  --text-title: 1.375rem;            /* 22px — section titles inside cards ("Recent Transactions") */
+  --text-base: 0.9375rem;            /* 15px — labels, body text, nav links, button text */
+  --text-small: 0.8125rem;           /* 13px — helper text, validation messages, dates */
+
+  /* ---------- Font weights ---------- */
+  --font-weight-regular: 400;        /* body text, descriptions */
+  --font-weight-medium: 500;         /* input labels */
+  --font-weight-semibold: 600;       /* buttons, nav, section titles */
+  --font-weight-bold: 700;           /* page headings only */
+
+    /* ---------- Spacing (padding, margins, gaps) ---------- */
+  --spacing-xs: 4px;                 /* tight gaps — between a label and its input */
+  --spacing-sm: 8px;                 /* small gaps — between stacked form fields */
+  --spacing-md: 16px;                /* standard gap — inside cards, between elements */
+  --spacing-lg: 24px;                /* card padding, section spacing */
+  --spacing-xl: 32px;                /* large gaps — between major page sections */
+
+
+  
+
+  /* ---------- Border radius (rounded corners) ---------- */
+  --radius-sm: 8px;                  /* buttons, inputs */
+  --radius-md: 12px;                 /* cards, containers */
+
+
+/* Login / register page background: off-white base with soft teal and peach glows.
+   Each radial-gradient is one glow: a color at a position that fades to transparent.
+   color-mix(... 90%, transparent) applies the opacity from the design. */
+
+
+}
+.auth-background {
+  background-color: var(--color-background); /* off-white base, 100% */
+  background-image:
+    /* main pale teal glow, top-left, 90% */
+    radial-gradient(circle at 10% 15%, color-mix(in srgb, var(--color-glow-teal) 90%, transparent), transparent 45%),
+    /* main warm peach glow, bottom-right, 90% */
+    radial-gradient(circle at 90% 85%, color-mix(in srgb, var(--color-glow-peach) 90%, transparent), transparent 45%),
+    /* soft teal accent, top-right, 70% */
+    radial-gradient(circle at 85% 10%, color-mix(in srgb, var(--color-accent-teal) 70%, transparent), transparent 30%),
+    /* soft peach accent, bottom-left, 70% */
+    radial-gradient(circle at 15% 90%, color-mix(in srgb, var(--color-accent-peach) 70%, transparent), transparent 30%);
+  background-attachment: fixed; /* glows stay in place if the register form scrolls */
+}

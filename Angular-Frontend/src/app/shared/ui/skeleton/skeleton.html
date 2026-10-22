@@ -1,0 +1,10 @@
+<div class="ui-skeleton-stack" aria-hidden="true">
+  @for (line of lineIndexes(); track line) {
+    <span
+      class="ui-skeleton"
+      [style.width]="width()"
+      [style.height]="height()"
+      [style.border-radius]="radius()"
+    ></span>
+  }
+</div>

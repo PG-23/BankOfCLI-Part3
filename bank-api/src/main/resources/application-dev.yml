@@ -1,0 +1,4 @@
+# Dev profile: also load the test-user seed data.
+spring:
+  flyway:
+    locations: classpath:db/migration,classpath:db/seed

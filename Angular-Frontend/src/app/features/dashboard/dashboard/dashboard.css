@@ -1,0 +1,1553 @@
+/* =========================================
+   DASHBOARD PAGE
+   ========================================= */
+
+.dashboard-page {
+  min-height: 100vh;
+
+  background:
+    linear-gradient(to bottom,
+      #2da3cf 0%,
+      #70c3df 48%,
+      #e8f4f7 70%,
+      #f2a1a5 84%,
+      #e32424 100%);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  color: #333333;
+
+  padding-bottom: 35px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   TOP NAVIGATION
+   ========================================= */
+
+.dashboard-header {
+  position: relative;
+
+  width: 100%;
+  height: 62px;
+
+  background: #128bb9;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   HAMBURGER BUTTON
+   ========================================= */
+
+.menu-button {
+  position: absolute;
+
+  left: 16px;
+  top: 12px;
+
+  width: 40px;
+  height: 40px;
+
+  border: 1px solid rgba(255, 255, 255, 0.85);
+
+  border-radius: 5px;
+
+  background: transparent;
+
+  color: #ffffff;
+
+  font-size: 19px;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.menu-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+
+  border-color: #ffffff;
+}
+
+
+/* =========================================
+   BRAND
+   ========================================= */
+
+.dashboard-brand {
+  position: absolute;
+
+  left: 76px;
+
+  top: 0;
+
+  height: 62px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  color: #ffffff;
+
+  font-size: 17px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.7px;
+
+  white-space: nowrap;
+}
+
+
+/* Small airline-style logo */
+
+.mini-logo {
+  position: relative;
+
+  width: 37px;
+  height: 30px;
+
+  flex-shrink: 0;
+}
+
+.mini-logo span {
+  position: absolute;
+
+  display: block;
+
+  border-radius: 100% 0 100% 0;
+}
+
+
+/* Blue / white wing */
+
+.mini-blue {
+  width: 34px;
+  height: 7px;
+
+  top: 11px;
+  left: 1px;
+
+  background: #ffffff;
+
+  transform: rotate(-18deg);
+}
+
+
+/* Purple wing */
+
+.mini-purple {
+  width: 32px;
+  height: 7px;
+
+  top: 8px;
+  left: 0;
+
+  background: #3a24e3;
+
+  transform: rotate(9deg);
+}
+
+
+/* Red wing */
+
+.mini-red {
+  width: 30px;
+  height: 7px;
+
+  top: 15px;
+  left: 7px;
+
+  background: #e32424;
+
+  transform: rotate(48deg);
+}
+
+
+/* =========================================
+   CENTER NAVIGATION
+   ========================================= */
+
+.dashboard-header::after {
+  content: "";
+  pointer-events: none;
+}
+
+
+/*
+ * The navigation links themselves are <a> elements.
+ * These rules remove the browser's default purple
+ * and underline styling.
+ */
+
+.dashboard-header a {
+  color: #ffffff;
+
+  text-decoration: none;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+
+/*
+ * The current dashboard HTML places the navigation
+ * links inside the header. This makes the group sit
+ * horizontally in the center.
+ */
+
+.dashboard-header a:not([routerLink="/dashboard"]) {
+  color: #ffffff;
+}
+
+.dashboard-header a:hover {
+  color: #ffffff;
+
+  text-decoration: none;
+}
+
+
+/* =========================================
+   PROFILE AREA
+   ========================================= */
+
+.profile-area {
+  position: absolute;
+
+  right: 18px;
+
+  top: 0;
+
+  height: 62px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  color: #ffffff;
+}
+
+
+/* Avatar */
+
+.profile-avatar {
+  width: 38px;
+  height: 38px;
+
+  border: 1px solid #ffffff;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+
+/* Name + ID */
+
+.profile-info {
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  min-width: 54px;
+
+  font-size: 10px;
+
+  line-height: 1.25;
+}
+
+.profile-info strong {
+  color: #ffffff;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.profile-info span {
+  color: rgba(255, 255, 255, 0.8);
+
+  font-size: 8px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   LOADING
+   ========================================= */
+
+.dashboard-loading {
+  min-height: 75vh;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #ffffff;
+
+  font-size: 14px;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+
+  border: 3px solid rgba(255, 255, 255, 0.35);
+
+  border-top-color: #ffffff;
+
+  border-radius: 50%;
+
+  animation: dashboard-spin 0.7s linear infinite;
+}
+
+@keyframes dashboard-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================
+   CONTENT
+   ========================================= */
+
+.dashboard-content {
+  width: 100%;
+
+  margin: 0 auto;
+
+  padding: 26px 7% 0;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   WELCOME / SEARCH
+   ========================================= */
+
+.welcome-row {
+  margin-bottom: 14px;
+}
+
+.welcome-date {
+  margin: 0 0 10px 18px;
+
+  color: #ffffff;
+
+  font-family:
+    Georgia,
+    'Times New Roman',
+    serif;
+
+  font-size: 16px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.2px;
+}
+
+
+/* Search bar */
+
+.help-search {
+  width: 65%;
+
+  height: 40px;
+
+  margin-left: 18px;
+
+  box-sizing: border-box;
+
+  border-radius: 6px;
+
+  background: rgba(0, 115, 170, 0.85);
+
+  display: flex;
+
+  align-items: center;
+
+  padding: 0 13px;
+
+  color: rgba(255, 255, 255, 0.85);
+
+  font-size: 11px;
+}
+
+.search-icon {
+  margin-right: 9px;
+
+  font-size: 16px;
+
+  font-weight: 700;
+}
+
+.search-placeholder {
+  flex: 1;
+
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.search-close {
+  font-size: 17px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================
+   ACCOUNT CARD
+   ========================================= */
+
+.account-card {
+  overflow: hidden;
+
+  width: 100%;
+
+  margin-bottom: 20px;
+
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.78);
+
+  box-shadow:
+    0 2px 7px rgba(0, 0, 0, 0.08);
+}
+
+
+/* Account header */
+
+.account-card-header {
+  height: 38px;
+
+  padding: 0 16px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  color: #ffffff;
+
+  font-family:
+    Georgia,
+    'Times New Roman',
+    serif;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  border-radius: 9px 9px 0 0;
+
+  box-sizing: border-box;
+}
+
+.checking-card .account-card-header {
+  background: #4aa9cf;
+}
+
+.savings-card .account-card-header {
+  background: #ed6267;
+}
+
+
+/* =========================================
+   BALANCE
+   ========================================= */
+
+.balance-area {
+  position: relative;
+
+  min-height: 120px;
+
+  padding: 20px 18px 14px;
+
+  box-sizing: border-box;
+}
+
+.checking-card .balance-area {
+  background: #dceff6;
+}
+
+.savings-card .balance-area {
+  background: #f9d9da;
+}
+
+.account-title {
+  font-family:
+    Georgia,
+    'Times New Roman',
+    serif;
+
+  font-size: 15px;
+
+  color: #333333;
+}
+
+.balance-value {
+  position: absolute;
+
+  right: 20px;
+  top: 17px;
+
+  font-family:
+    Georgia,
+    'Times New Roman',
+    serif;
+
+  font-size: 35px;
+
+  line-height: 1;
+}
+
+.balance-label {
+  position: absolute;
+
+  right: 21px;
+  top: 58px;
+
+  font-size: 9px;
+
+  color: #444444;
+}
+
+
+/* =========================================
+   ACCOUNT DETAILS
+   ========================================= */
+
+.details-header {
+  height: 40px;
+
+  padding: 0 17px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  background: rgba(140, 180, 196, 0.52);
+
+  color: #333333;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.savings-card .details-header {
+  background: rgba(232, 168, 170, 0.58);
+}
+
+.account-details {
+  padding: 12px 17px 13px;
+
+  background: rgba(130, 175, 193, 0.65);
+}
+
+.savings-card .account-details {
+  background: rgba(232, 168, 170, 0.62);
+}
+
+.account-details>div {
+  display: flex;
+
+  justify-content: space-between;
+
+  margin-bottom: 7px;
+
+  font-size: 10px;
+}
+
+.account-details>div:last-child {
+  margin-bottom: 0;
+}
+
+.account-details span {
+  color: #333333;
+}
+
+.account-details strong {
+  color: #ffffff;
+
+  font-weight: 400;
+}
+
+
+/* =========================================
+   ACTION BUTTONS
+   ========================================= */
+
+.account-actions {
+  display: grid;
+
+  grid-template-columns:
+    78px 1fr 1fr 1fr;
+
+  gap: 16px;
+
+  padding: 16px 28px 15px;
+
+  background: #ffffff;
+
+  box-sizing: border-box;
+}
+
+.action-button {
+  height: 34px;
+
+  border-radius: 18px;
+
+  background: #4baad0;
+
+  color: #ffffff;
+
+  text-decoration: none;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.15s ease;
+}
+
+.savings-card .action-button {
+  background: #ed777b;
+}
+
+.action-button:hover {
+  opacity: 0.88;
+
+  transform: translateY(-1px);
+}
+
+.primary-action {
+  font-size: 22px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================
+   TRANSACTIONS
+   ========================================= */
+
+.transactions-card {
+  margin: 0 13px 13px;
+
+  overflow: hidden;
+
+  border: 1px solid #cccccc;
+
+  border-radius: 8px;
+
+  background: #eeeeee;
+}
+
+.transactions-heading {
+  min-height: 38px;
+
+  padding: 0 14px;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  background: #eeeeee;
+
+  font-family:
+    Georgia,
+    'Times New Roman',
+    serif;
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+.transactions-heading a {
+  color: #168fc3;
+
+  text-decoration: none;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 9px;
+
+  font-weight: 700;
+}
+
+.transactions-heading a:hover {
+  text-decoration: none;
+
+  color: #0075aa;
+}
+
+.savings-card .transactions-heading a {
+  color: #e32424;
+}
+
+.transaction-meta {
+  height: 28px;
+
+  padding: 0 14px;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  background: #d7d7d7;
+
+  color: #555555;
+
+  font-size: 8px;
+}
+
+.transaction-list {
+  background: #f2f2f2;
+}
+
+.transaction-row {
+  min-height: 50px;
+
+  padding: 0 14px;
+
+  box-sizing: border-box;
+
+  display: grid;
+
+  grid-template-columns:
+    38px 1fr auto;
+
+  align-items: center;
+
+  gap: 10px;
+
+  border-bottom: 1px solid #cccccc;
+}
+
+.transaction-row:last-child {
+  border-bottom: none;
+}
+
+.merchant-icon {
+  width: 28px;
+  height: 28px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;
+
+  border: 1.5px solid #168fc3;
+
+  color: #168fc3;
+
+  font-size: 15px;
+
+  font-weight: 700;
+
+  box-sizing: border-box;
+}
+
+.savings-card .merchant-icon {
+  border-color: #e32424;
+
+  color: #e32424;
+}
+
+.transaction-description {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+
+  min-width: 0;
+}
+
+.transaction-description strong {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+  font-size: 10px;
+
+  font-weight: 400;
+}
+
+.transaction-description span {
+  color: #777777;
+
+  font-size: 8px;
+}
+
+.transaction-amount {
+  font-size: 10px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.transaction-amount.deposit {
+  color: #008ac7;
+}
+
+.transaction-amount.withdraw {
+  color: #e32424;
+}
+
+.transaction-amount.transfer {
+  color: #168fc3;
+}
+
+.empty-transactions {
+  padding: 20px;
+
+  text-align: center;
+
+  color: #777777;
+
+  font-size: 10px;
+}
+
+
+/* =========================================
+   TRANSACTION ACTIVITY
+   ========================================= */
+
+.activity-card {
+  width: 100%;
+
+  margin-top: 30px;
+
+  overflow: hidden;
+
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 2px 7px rgba(0, 0, 0, 0.08);
+}
+
+.activity-header {
+  min-height: 62px;
+
+  padding: 13px 18px 7px;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+}
+
+.activity-header h2 {
+  margin: 0;
+
+  font-size: 20px;
+
+  font-weight: 700;
+}
+
+.activity-header p {
+  margin: 5px 0 0;
+
+  font-size: 10px;
+
+  color: #555555;
+}
+
+.period-button {
+  height: 32px;
+
+  padding: 0 12px;
+
+  border: 1px solid #dddddd;
+
+  border-radius: 9px;
+
+  background: #eeeeee;
+
+  color: #333333;
+
+  font-size: 9px;
+
+  cursor: pointer;
+}
+
+
+/* =========================================
+   ACTIVITY LEGEND
+   ========================================= */
+
+.activity-legend {
+  display: flex;
+
+  align-items: center;
+
+  gap: 28px;
+
+  padding: 0 18px 9px;
+
+  font-size: 9px;
+
+  border-bottom: 1px solid #d0d0d0;
+}
+
+.activity-legend span {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+}
+
+.legend {
+  display: inline-block;
+
+  width: 13px;
+  height: 13px;
+
+  border-radius: 2px;
+}
+
+.legend.deposits {
+  background: #168fc3;
+}
+
+.legend.withdrawals {
+  background: #e32424;
+}
+
+.legend.transfers {
+  background: #98b7b8;
+}
+
+
+/* =========================================
+   CHART
+   ========================================= */
+
+.chart {
+  height: 215px;
+
+  padding: 15px 28px 14px;
+
+  box-sizing: border-box;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, 1fr);
+
+  align-items: stretch;
+
+  background: #ffffff;
+}
+
+.chart-column {
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: flex-end;
+
+  align-items: center;
+
+  min-width: 0;
+}
+
+.bars {
+  width: 100%;
+
+  height: 165px;
+
+  display: flex;
+
+  align-items: flex-end;
+
+  justify-content: center;
+
+  gap: 5px;
+}
+
+.bar {
+  width: 19px;
+
+  min-height: 4px;
+
+  border-radius:
+    9px 9px 3px 3px;
+
+  transition:
+    height 0.3s ease;
+}
+
+.bar.deposits {
+  background: #168fc3;
+}
+
+.bar.withdrawals {
+  background: #e32424;
+}
+
+.bar.transfers {
+  background: #98b7b8;
+}
+
+.month-label {
+  margin-top: 6px;
+
+  font-size: 9px;
+
+  color: #444444;
+}
+
+
+/* =========================================
+   LARGE SCREENS
+   ========================================= */
+
+@media (min-width: 1200px) {
+
+  .dashboard-header {
+    height: 72px;
+  }
+
+  .menu-button {
+    left: 24px;
+    top: 15px;
+
+    width: 46px;
+    height: 46px;
+  }
+
+  .dashboard-brand {
+    left: 90px;
+
+    height: 72px;
+
+    font-size: 20px;
+  }
+
+  .mini-logo {
+    width: 43px;
+    height: 34px;
+  }
+
+  .profile-area {
+    right: 28px;
+
+    height: 72px;
+  }
+
+  .profile-avatar {
+    width: 43px;
+    height: 43px;
+
+    font-size: 14px;
+  }
+
+  .profile-info strong {
+    font-size: 12px;
+  }
+
+  .profile-info span {
+    font-size: 9px;
+  }
+
+  .dashboard-content {
+    padding:
+      28px 7% 0;
+  }
+
+  .welcome-date {
+    font-size: 17px;
+  }
+
+  .help-search {
+    height: 42px;
+
+    width: 62%;
+  }
+
+  .account-card-header {
+    height: 40px;
+
+    font-size: 16px;
+  }
+
+  .balance-area {
+    min-height: 120px;
+  }
+
+  .balance-value {
+    font-size: 38px;
+  }
+
+  .activity-header h2 {
+    font-size: 21px;
+  }
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 700px) {
+
+  .dashboard-header {
+    height: 58px;
+  }
+
+  .menu-button {
+    left: 10px;
+    top: 10px;
+
+    width: 38px;
+    height: 38px;
+  }
+
+  .dashboard-brand {
+    left: 60px;
+
+    font-size: 12px;
+
+    gap: 6px;
+  }
+
+  .mini-logo {
+    width: 30px;
+    height: 25px;
+  }
+
+  .profile-area {
+    right: 9px;
+
+    gap: 5px;
+  }
+
+  .profile-avatar {
+    width: 32px;
+    height: 32px;
+
+    font-size: 11px;
+  }
+
+  .profile-info {
+    display: none;
+  }
+
+  .dashboard-content {
+    padding:
+      20px 3% 0;
+  }
+
+  .welcome-date {
+    margin-left: 8px;
+
+    font-size: 13px;
+  }
+
+  .help-search {
+    width: 90%;
+
+    margin-left: 8px;
+  }
+
+  .balance-value {
+    font-size: 28px;
+  }
+
+  .account-actions {
+    grid-template-columns:
+      48px 1fr 1fr 1fr;
+
+    gap: 7px;
+
+    padding:
+      12px 12px;
+  }
+
+  .action-button {
+    font-size: 8px;
+  }
+
+  .transactions-card {
+    margin:
+      0 7px 9px;
+  }
+
+  .activity-card {
+    margin-top: 20px;
+  }
+
+  .activity-header h2 {
+    font-size: 16px;
+  }
+
+  .chart {
+    height: 175px;
+
+    padding:
+      12px 10px 10px;
+  }
+
+  .bars {
+    height: 130px;
+
+    gap: 3px;
+  }
+
+  .bar {
+    width: 12px;
+  }
+
+  .activity-legend {
+    gap: 12px;
+
+    padding-left: 12px;
+  }
+}
+
+
+/* =========================================
+   SMALL PHONES
+   ========================================= */
+
+@media (max-width: 450px) {
+
+  .dashboard-brand {
+    font-size: 10px;
+  }
+
+  .dashboard-brand .mini-logo {
+    display: none;
+  }
+
+  .account-title {
+    font-size: 11px;
+  }
+
+  .balance-value {
+    font-size: 23px;
+  }
+
+  .account-actions {
+    grid-template-columns:
+      42px 1fr 1fr 1fr;
+
+    gap: 5px;
+
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .action-button {
+    font-size: 7px;
+  }
+
+  .transaction-row {
+    grid-template-columns:
+      32px 1fr auto;
+
+    gap: 7px;
+
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .merchant-icon {
+    width: 25px;
+    height: 25px;
+
+    font-size: 13px;
+  }
+
+  .activity-header {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .period-button {
+    font-size: 7px;
+  }
+}
+/* =========================================
+   INTERACTIVE DASHBOARD CONTROLS
+   ========================================= */
+
+.profile-wrapper {
+  position: absolute !important;
+  top: 50% !important;
+  right: 7% !important;
+  transform: translateY(-50%) !important;
+  z-index: 1001;
+}
+
+.profile-area {
+  position: static !important;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 6px 8px;
+  font: inherit;
+  text-align: left;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.profile-area:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.profile-arrow {
+  font-size: 10px;
+  margin-left: 4px;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 240px;
+  background: #ffffff;
+  border: 1px solid #dce5e8;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.profile-dropdown-header {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-dropdown-header strong {
+  color: #000000;
+  font-size: 15px;
+}
+
+.profile-dropdown-header span {
+  color: #555555;
+  font-size: 13px;
+}
+
+.profile-dropdown-header small {
+  color: #777777;
+  font-size: 12px;
+}
+
+.profile-dropdown-divider {
+  height: 1px;
+  background: #e5eaec;
+}
+
+.profile-dropdown-item {
+  width: 100%;
+  border: none;
+  background: #ffffff;
+  padding: 13px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: left;
+}
+
+.profile-dropdown-item:hover {
+  background: #f2f6f7;
+}
+
+.logout-button {
+  color: #e32424;
+  font-weight: 600;
+}
+
+
+/* =========================================
+   ACCOUNT DETAILS BUTTON
+   ========================================= */
+
+.details-header {
+  width: 100%;
+  border: none;
+  background: rgba(140, 180, 196, 0.52);
+  color: #333333;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.details-header:hover {
+  filter: brightness(0.97);
+}
+
+.savings-card .details-header {
+  background: rgba(232, 168, 170, 0.58);
+}
+
+
+/* =========================================
+   VIEW ALL TRANSACTIONS BUTTON
+   ========================================= */
+
+.view-transactions-button {
+  border: none;
+  background: transparent;
+  color: #168fc3;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.view-transactions-button:hover {
+  color: #0075aa;
+  text-decoration: underline;
+}
+
+.savings-card .view-transactions-button {
+  color: #e32424;
+}
+
+
+/* =========================================
+   FOCUS STATES
+   ========================================= */
+
+.profile-area:focus-visible,
+.details-header:focus-visible,
+.view-transactions-button:focus-visible,
+.profile-dropdown-item:focus-visible {
+  outline: 2px solid #3a24e3;
+  outline-offset: 2px;
+}
+
+
+/* =========================================
+   INTERACTIVE DASHBOARD MOBILE
+   ========================================= */
+
+@media (max-width: 700px) {
+
+  .profile-dropdown {
+    right: -8px;
+    width: 220px;
+  }
+
+  .view-transactions-button {
+    font-size: 8px;
+  }
+
+  .details-header {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+    .help-search {
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .help-search:hover {
+      text-decoration: none;
+    }
+}

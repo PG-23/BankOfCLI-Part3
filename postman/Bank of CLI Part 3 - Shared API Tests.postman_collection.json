@@ -1,0 +1,1102 @@
+{
+  "info": {
+    "_postman_id": "989fba2f-8416-4540-92f3-fa7275c40c5c",
+    "name": "Bank of CLI Part 3 | Shared API Tests Copy",
+    "description": "Team collection based on docs/api-contract.md in the Oct 20 ZIP. Import into Postman; set the loginPassword collection variable locally (demo: password1); run Login & save JWT; then run authenticated requests. Contract uses /auth/login, /accounts/me and /transactions/withdraw, while currently implemented HealthController uses /api/health. Ask the team whether to use a global /api prefix before changing apiPrefix. Several endpoints do not exist in the inspected snapshot: failed requests may reflect unfinished features, not collection errors. Only the successful withdrawal request mutates demo data. Do not export real tokens/passwords. Use Postman collection variables, not production credentials.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "38316417",
+    "_collection_link": "https://go.postman.co/collection/38316417-989fba2f-8416-4540-92f3-fa7275c40c5c?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "01 | Health check",
+      "item": [
+        {
+          "name": "GET health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "health"
+              ]
+            },
+            "description": "Current server path /api/health is implemented; bypass optional apiPrefix for this request."
+          },
+          "response": []
+        }
+      ],
+      "description": "The health request has its own /api path in the current controller."
+    },
+    {
+      "name": "02 | Authentication",
+      "item": [
+        {
+          "name": "Login & save JWT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login returns HTTP 200\", function () { pm.response.to.have.status(200); });\nif (pm.response.code === 200) {\n  const body = pm.response.json();\n  pm.test(\"Login includes a nonempty token\", function () {\n    pm.expect(body.token).to.be.a(\"string\").and.not.empty;\n  });\n  if (typeof body.token === \"string\" && body.token.length > 0) {\n    pm.collectionVariables.set(\"jwtToken\", body.token);\n  }\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"HollyCy@email.com\",\n  \"password\": \"password1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/auth/login",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Run after authentication endpoint is implemented. On HTTP 200, saves response.token into collection variable jwtToken. Uses contract path /auth/login. Check API prefix with team."
+          },
+          "response": []
+        },
+        {
+          "name": "Login & save Recipiant Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login returns HTTP 200\", function () { pm.response.to.have.status(200); });\nif (pm.response.code === 200) {\n  const body = pm.response.json();\n  pm.test(\"Login includes a nonempty token\", function () {\n    pm.expect(body.token).to.be.a(\"string\").and.not.empty;\n  });\n  if (typeof body.token === \"string\" && body.token.length > 0) {\n    pm.collectionVariables.set(\"recipientAccount\", body.account.accountNumber);\n  }\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"ptester2118\",\n  \"password\": \"secret123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/auth/login",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Run after authentication endpoint is implemented. On HTTP 200, saves response.token into collection variable jwtToken. Uses contract path /auth/login. Check API prefix with team."
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid credentials → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });",
+                  "pm.test(\"Contract error code\", function () {",
+                  "  pm.expect(pm.response.json().code).to.eql(\"INVALID_CREDENTIALS\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"not-a-user@example.com\",\n  \"password\": \"incorrect-password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/auth/login",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Expected by contract once auth is implemented."
+          },
+          "response": []
+        },
+        {
+          "name": "Register Recipiant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Recipient lookup\r\npm.test(\"Register returns HTTP 200\", function () { pm.response.to.have.status(200); });\r\nif (pm.response.code === 200) {\r\n  const body = pm.response.json();\r\n  if (typeof body.account.accountNumber === \"string\" && body.token.length > 0) {\r\n    pm.collectionVariables.set(\"recipientAccount\", body.account.accountNumber);\r\n  }\r\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "   {\r\n     \"firstName\": \"Postman\",\r\n     \"lastName\": \"Tester\",\r\n     \"email\": \"{{$randomEmail}}\",\r\n     \"password\": \"secret123\"\r\n   }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/auth/register",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03 | Accounts",
+      "item": [
+        {
+          "name": "GET my account → 200",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/accounts/me",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "accounts",
+                "me"
+              ]
+            },
+            "description": "Needs signed JWT; runs after successful login. Uses inherited Bearer auth."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04 | Transactions",
+      "item": [
+        {
+          "name": "Withdraw valid amount → 201 (changes balance)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });\npm.test(\"Response includes newBalanceCents\", function () { pm.expect(pm.response.json()).to.have.property(\"newBalanceCents\"); });"
+                ]
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {
+              "content-type": true
+            }
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountNumber\": \"{{accountNumber}}\",\n  \"amountCents\": 5000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/transactions/withdraw",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "transactions",
+                "withdraw"
+              ]
+            },
+            "description": "WARNING: This moves 2500 cents ($25) from the demo account, so run only when you intend to mutate dev/test data."
+          },
+          "response": []
+        },
+        {
+          "name": "Withdraw valid amount → 201 (changes balance) Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"Response includes newBalanceCents\", function () { pm.expect(pm.response.json()).to.have.property(\"newBalanceCents\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountNumber\": \"{{accountNumber}}\",\n  \"amountCents\": 2500\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/transactions/withdraw",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "transactions",
+                "withdraw"
+              ]
+            },
+            "description": "WARNING: This moves 2500 cents ($25) from the demo account, so run only when you intend to mutate dev/test data."
+          },
+          "response": []
+        },
+        {
+          "name": "Withdraw zero amount → 400 INVALID_AMOUNT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () { pm.response.to.have.status(400); });",
+                  "pm.test(\"Contract error code\", function () {",
+                  "  pm.expect(pm.response.json().code).to.eql(\"INVALID_AMOUNT\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountNumber\": \"{{accountNumber}}\",\n  \"amountCents\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/transactions/withdraw",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "transactions",
+                "withdraw"
+              ]
+            },
+            "description": "Should not change account balance. Backend should return a standardized ApiError."
+          },
+          "response": []
+        },
+        {
+          "name": "Deposit valid amount -> 201 (changes balance)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });\npm.test(\"Contract error code\", function () {\n  pm.expect(pm.response.json().code).to.eql(\"INSUFFICIENT_FUNDS\");\n});\npm.test(\"Correct invalid field\", function () { pm.expect(pm.response.json().field).to.eql(\"amountCents\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountNumber\": \"{{accountNumber}}\",\n  \"amountCents\": 100000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/transactions/deposit",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "transactions",
+                "deposit"
+              ]
+            },
+            "description": "The contract permits up to 10,000,000,000 cents per transaction; seeded demo balance should be below this. Should not change funds."
+          },
+          "response": []
+        },
+        {
+          "name": "Deposit zerpamount -> 400",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });\npm.test(\"Contract error code\", function () {\n  pm.expect(pm.response.json().code).to.eql(\"INSUFFICIENT_FUNDS\");\n});\npm.test(\"Correct invalid field\", function () { pm.expect(pm.response.json().field).to.eql(\"amountCents\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountNumber\": \"{{accountNumber}}\",\n  \"amountCents\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/transactions/deposit",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "transactions",
+                "deposit"
+              ]
+            },
+            "description": "The contract permits up to 10,000,000,000 cents per transaction; seeded demo balance should be below this. Should not change funds."
+          },
+          "response": []
+        },
+        {
+          "name": "Transaction activity",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "  pm.test(\"200 with transactions\", () => {\r\n    pm.response.to.have.status(200);\r\n    pm.expect(pm.response.json().transactions).to.be.an(\"array\");\r\n  });"
+                ]
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwtToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}} {{apiPrefix}}/transactions/activity?since=2026-10-01T00:00:00Z",
+              "host": [
+                "{{baseUrl}} {{apiPrefix}}"
+              ],
+              "path": [
+                "transactions",
+                "activity"
+              ],
+              "query": [
+                {
+                  "key": "since",
+                  "value": "2026-10-01T00:00:00Z"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transfer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Transfer\r\npm.test(\"201 transfer\", () => {\r\n  pm.response.to.have.status(201);\r\n  pm.expect(pm.response.json().transaction.type).to.eql(\"transfer\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwtToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \r\n    \"fromAccountNumber\": \"{{accountNumber}}\",\r\n    \"toAccountNumber\": \"{{recipientAccount}}\",\r\n    \"amountCents\": 5000 \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}} {{apiPrefix}}/transactions/transfer",
+              "host": [
+                "{{baseUrl}} {{apiPrefix}}"
+              ],
+              "path": [
+                "transactions",
+                "transfer"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Non-Paginated Transaction History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/transactions",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Paginated Transaction History",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/transactions/paged?page=1",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "transactions",
+                "paged"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Paginated Transaction History With Filter",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/transactions/paged?size=4&page=0&type=transfer",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "transactions",
+                "paged"
+              ],
+              "query": [
+                {
+                  "key": "size",
+                  "value": "4"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "type",
+                  "value": "transfer"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05 | Recipitants",
+      "item": [
+        {
+          "name": "Recipient lookup",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Recipient lookup\r\npm.test(\"200 with name\", () => {\r\n  pm.response.to.have.status(200);\r\n  pm.expect(pm.response.json().firstName).to.be.a(\"string\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwtToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}} {{apiPrefix}}/accounts/{{recipientAccount}}",
+              "host": [
+                "{{baseUrl}} {{apiPrefix}}"
+              ],
+              "path": [
+                "accounts",
+                "{{recipientAccount}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Recipient lookup (self-transfer)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Recipient lookup (self-transfer)\r\npm.test(\"400 self-transfer\", () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwtToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}} {{apiPrefix}}/accounts/{{accountNumber}}",
+              "host": [
+                "{{baseUrl}} {{apiPrefix}}"
+              ],
+              "path": [
+                "accounts",
+                "{{accountNumber}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Recipient lookup (not-found)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Recipient lookup (not-found)\r\npm.test(\"404 ACCOUNT_NOT_FOUND\", () => {\r\n  pm.response.to.have.status(404);\r\n  pm.expect(pm.response.json().code).to.eql(\"ACCOUNT_NOT_FOUND\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{jwtToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/accounts/9999999999",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "accounts",
+                "9999999999"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "06 | JWT security tests",
+      "item": [
+        {
+          "name": "Missing JWT → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });",
+                  "pm.test(\"Contract error code\", function () {",
+                  "  pm.expect(pm.response.json().code).to.eql(\"UNAUTHORIZED\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/account/me",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "account",
+                "me"
+              ]
+            },
+            "description": "No Authorization header: expected HTTP 401 and ApiError UNAUTHORIZED after JWT security is implemented."
+          },
+          "response": []
+        },
+        {
+          "name": "Tampered JWT → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });",
+                  "pm.test(\"Contract error code\", function () {",
+                  "  pm.expect(pm.response.json().code).to.eql(\"UNAUTHORIZED\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_secret_0xme}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/account/me",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "account",
+                "me"
+              ]
+            },
+            "description": "Uses a deliberately invalid bearer token."
+          },
+          "response": []
+        },
+        {
+          "name": "Expired JWT → 401 (paste real expired token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });",
+                  "pm.test(\"Contract error code\", function () {",
+                  "  pm.expect(pm.response.json().code).to.eql(\"UNAUTHORIZED\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{expiredJwtToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/account/me",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "account",
+                "me"
+              ]
+            },
+            "description": "Manually set expiredJwtToken to a genuine token that has passed its exp timestamp. A blank variable is not a real expiration test."
+          },
+          "response": []
+        }
+      ],
+      "description": "SecurityConfig currently lacks a JWT filter and returns empty 401 via HttpStatusEntryPoint. These test expectations become valid only after JWT integration and contract-compliant security error handling."
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwtToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "description": "Local Spring Boot server base URL"
+    },
+    {
+      "key": "apiPrefix",
+      "value": "/api",
+      "description": "Optional global API prefix such as /api; contract currently shows no /api for auth and transactions"
+    },
+    {
+      "key": "loginIdentifier",
+      "value": "alice@bank.com",
+      "description": "Demo user from docs/api-contract.md"
+    },
+    {
+      "key": "loginPassword",
+      "value": "",
+      "description": "Set locally to the demo password (password1) in Postman; never put real passwords in shared exports"
+    },
+    {
+      "key": "accountNumber",
+      "value": "1000001234",
+      "description": "Seed Alice account number; update if needed"
+    },
+    {
+      "key": "jwtToken",
+      "value": "",
+      "description": "Auto-set by the Login & save JWT request after successful response"
+    },
+    {
+      "key": "expiredJwtToken",
+      "value": "",
+      "description": "Paste a genuine expired token for the expiry scenario; a blank token only tests missing credentials"
+    },
+    {
+      "key": "auth_secret_0xme"
+    },
+    {
+      "key": "recipientAccount",
+      "value": ""
+    }
+  ]
+}

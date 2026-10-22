@@ -1,0 +1,24 @@
+@if (open()) {
+  <div class="ui-modal" role="presentation">
+    <div class="ui-modal__backdrop" (click)="onBackdrop()"></div>
+    <div
+      class="ui-modal__dialog"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-labelledby]="'modal-title'"
+    >
+      <header class="ui-modal__header">
+        <h2 class="ui-modal__title" id="modal-title">{{ title() }}</h2>
+        <app-button variant="ghost" size="sm" (click)="closed.emit()" aria-label="Close dialog">
+          ✕
+        </app-button>
+      </header>
+      <div class="ui-modal__body">
+        <ng-content />
+      </div>
+      <footer class="ui-modal__footer">
+        <ng-content select="[modal-footer]" />
+      </footer>
+    </div>
+  </div>
+}

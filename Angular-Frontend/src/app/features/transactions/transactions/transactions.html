@@ -1,0 +1,149 @@
+<div class="tx-page">
+  <h1 class="tx-title">Transactions</h1>
+
+  <!-- Summary cards -->
+  <section class="tx-summary">
+    <article class="tx-card tx-card--balance">
+      <p class="tx-card__label">Total balance</p>
+      <p class="tx-card__amount">{{ account()?.balance | currency: 'USD' }}</p>
+      <p class="tx-card__sub">Account {{ account()?.accountNumber }}</p>
+    </article>
+    <article class="tx-card">
+      <p class="tx-card__label">Income</p>
+      <p class="tx-card__amount tx-card__amount--income">{{ totals().income | currency: 'USD' }}</p>
+    </article>
+    <article class="tx-card">
+      <p class="tx-card__label">Expenses</p>
+      <p class="tx-card__amount tx-card__amount--expenses">{{ totals().expenses | currency: 'USD' }}</p>
+    </article>
+  </section>
+
+  <!-- Welcome -->
+  <section class="tx-welcome">
+    <p>Welcome back<br />{{ userName() }},</p>
+  </section>
+
+  <!-- Tabs + forms -->
+  <section class="tx-actions">
+    <nav class="tx-tabs">
+      <button type="button" class="tx-tab" [class.tx-tab--active]="mode() === 'deposit'" (click)="setMode('deposit')">Deposit</button>
+      <button type="button" class="tx-tab" [class.tx-tab--active]="mode() === 'withdraw'" (click)="setMode('withdraw')">Withdraw</button>
+      <button type="button" class="tx-tab" [class.tx-tab--active]="mode() === 'transfer'" (click)="setMode('transfer')">Transfer</button>
+    </nav>
+
+    @if (feedback(); as fb) {
+      <div class="tx-feedback" [class.tx-feedback--success]="fb.type === 'success'" [class.tx-feedback--error]="fb.type === 'error'" role="alert">
+        {{ fb.text }}
+      </div>
+    }
+
+    @if (mode() === 'deposit') {
+      <form class="tx-form" [formGroup]="depositForm" (ngSubmit)="onDeposit()">
+        <label class="tx-field">
+          <span>Amount</span>
+          <input type="number" step="0.01" inputmode="decimal" formControlName="amount" placeholder="0.00" />
+          @if (depositForm.controls.amount.touched && depositForm.controls.amount.invalid) {
+            <small class="tx-error">Enter an amount greater than 0 with up to 2 decimals.</small>
+          }
+        </label>
+        <button type="submit" class="tx-submit" [disabled]="loading()">{{ loading() ? 'Processing...' : 'Deposit' }}</button>
+      </form>
+    }
+
+    @if (mode() === 'withdraw') {
+      <form class="tx-form" [formGroup]="withdrawForm" (ngSubmit)="onWithdraw()">
+        <label class="tx-field">
+          <span>Amount</span>
+          <input type="number" step="0.01" inputmode="decimal" formControlName="amount" placeholder="0.00" />
+          @if (withdrawForm.controls.amount.touched && withdrawForm.controls.amount.invalid) {
+            <small class="tx-error">Enter an amount greater than 0 with up to 2 decimals.</small>
+          }
+        </label>
+        <button type="submit" class="tx-submit" [disabled]="loading()">{{ loading() ? 'Processing...' : 'Withdraw' }}</button>
+      </form>
+    }
+
+    @if (mode() === 'transfer') {
+      <form class="tx-form" [formGroup]="transferForm" (ngSubmit)="onTransfer()">
+        <label class="tx-field">
+          <span>Recipient account number</span>
+          <input type="text" inputmode="numeric" maxlength="10" formControlName="toAccountNumber" placeholder="10 digits" />
+          @if (transferForm.controls.toAccountNumber.touched && transferForm.controls.toAccountNumber.invalid) {
+            <small class="tx-error">Enter a 10-digit account number.</small>
+          }
+        </label>
+        <label class="tx-field">
+          <span>Amount</span>
+          <input type="number" step="0.01" inputmode="decimal" formControlName="amount" placeholder="0.00" />
+          @if (transferForm.controls.amount.touched && transferForm.controls.amount.invalid) {
+            <small class="tx-error">Enter an amount greater than 0 with up to 2 decimals.</small>
+          }
+        </label>
+        <label class="tx-field">
+          <span>Message (optional)</span>
+          <textarea rows="3" formControlName="description"></textarea>
+        </label>
+        <button type="submit" class="tx-submit" [disabled]="loading()">{{ loading() ? 'Processing...' : 'Transfer' }}</button>
+      </form>
+    }
+  </section>
+
+  <!-- Quick transfer -->
+  <section class="tx-quick">
+    <h2>Quick transfer</h2>
+    <ul class="tx-quick__list">
+      @for (r of recipients(); track r.id) {
+        <li>
+          <button type="button" class="tx-person"
+            [class.tx-person--selected]="selectedAccountNumber() === r.accountNumber"
+            (click)="pickRecipient(r)">
+            <span class="tx-person__avatar">{{ initials(r) }}</span>
+            <span class="tx-person__name">{{ r.firstName }} {{ r.lastName[0] }}.</span>
+          </button>
+        </li>
+      } @empty {
+        <li class="tx-empty">No saved recipients yet.</li>
+      }
+    </ul>
+  </section>
+
+  <!-- All transactions -->
+  <section class="tx-tablecard">
+    <h2>All transactions</h2>
+
+    @if (tableLoading()) {
+      @for (i of [1, 2, 3, 4, 5]; track i) { <div class="tx-skeleton"></div> }
+    } @else if (transactions().length === 0) {
+      <p class="tx-empty tx-empty--pad">No transactions yet.</p>
+    } @else {
+      <table class="tx-table">
+        <thead>
+          <tr>
+            <th>Transaction</th>
+            <th>Date</th>
+            <th class="tx-col-type">Type</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (t of pagedTransactions(); track t.id) {
+            <tr [class.tx-tr--credit]="isCredit(t)" [class.tx-tr--debit]="!isCredit(t)">
+              <td>{{ rowTitle(t) }}</td>
+              <td>{{ t.createdAt | date: 'MM-dd-yyyy hh:mm a' }}</td>
+              <td class="tx-col-type">{{ typeLabel(t) }}</td>
+              <td>{{ isCredit(t) ? '+' : '-' }}{{ t.amount | currency: 'USD' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <nav class="tx-pager" aria-label="Pagination">
+        <button type="button" (click)="goTo(currentPage() - 1)" [disabled]="currentPage() === 1">← Previous</button>
+        @for (p of pages(); track p) {
+          <button type="button" [class.tx-pager__active]="p === currentPage()" (click)="goTo(p)">{{ p }}</button>
+        }
+        <button type="button" (click)="goTo(currentPage() + 1)" [disabled]="currentPage() === totalPages()">Next →</button>
+      </nav>
+    }
+  </section>
+</div>
