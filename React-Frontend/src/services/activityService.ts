@@ -1,13 +1,14 @@
 import type {Transaction} from '../models';
-import { db,delay } from '../mocks/db';
+import { api } from './apiClient';
 
 // Every transaction that involves this account (no paging), for the activity chart.
 
-export async function getAccountActivity(accountNumber:string): Promise<Transaction[]>{
-    await delay(300);
-    return db.transactions.filter(
-        t => t.fromAccountNumber === accountNumber || t.toAccountNumber === accountNumber,
-    
-    );
+export async function getAccountActivity(daysAgo: number): Promise<Transaction[]>{
 
+    const since = new Date();
+    since.setDate(since.getDate() - daysAgo);
+
+    const response = await api.get<{transactions: Transaction[]}>(`/transactions/activity?since=${since.toISOString()}`);
+
+    return response.transactions;
 }
