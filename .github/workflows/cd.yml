@@ -92,3 +92,40 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
+
+  angular:
+    name: Deploy Angular frontend (S3 + CloudFront)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Angular-Frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: Angular-Frontend/package-lock.json
+
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+          # Angular only writes index.csr.html at the root; CloudFront serves /index.html for app routes
+          cp dist/angular_folder/browser/index.csr.html dist/angular_folder/browser/index.html
+
+      - name: Log in to AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Upload to S3
+        run: aws s3 sync dist/angular_folder/browser "s3://${{ vars.S3_BUCKET_ANGULAR }}" --delete
+
+      - name: Clear CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID_ANGULAR }} \
+            --paths "/*"
