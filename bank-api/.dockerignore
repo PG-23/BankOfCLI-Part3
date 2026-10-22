@@ -1,0 +1,7 @@
+# Keep the Docker build context small; the image builds from pom.xml + src only.
+target
+.mvn
+mvnw
+mvnw.cmd
+HELP.md
+.git*
