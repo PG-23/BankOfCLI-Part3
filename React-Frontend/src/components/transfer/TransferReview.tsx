@@ -6,7 +6,7 @@ import { InfoBanner } from '../InfoBanner';
 interface TransferReviewProps {
   recipient: RecipientLookup;   // verified recipient from lookupRecipient()
   amountCents: number;          // e.g. 65000 = $650.00
-  reference: string;            // e.g. "October rent"
+  note: string;                 // e.g. "October rent"
   reviewedAt: Date;             // when the user clicked "Review transfer details"
   serverError:string | null;    //error with no field,
   isSubmitting:boolean;        //true while transfer() is running 
@@ -38,7 +38,7 @@ export function DetailRow({ label, value }: { label: string; value: string }) {
 }
 
 export function TransferReview({
-  recipient, amountCents, reference, reviewedAt,isSubmitting,serverError, onBack, onConfirm,
+  recipient, amountCents, note, reviewedAt,isSubmitting,serverError, onBack, onConfirm,
 }: TransferReviewProps) {
   const fullName = `${recipient.firstName} ${recipient.lastName}`;
 
@@ -63,7 +63,7 @@ export function TransferReview({
         <dl className="mt-md border-t border-border pt-md">
           <DetailRow label="Recipient account number" value={formatAccountNumber(recipient.accountNumber)} />
           <DetailRow label="Transfer amount" value={formatCents(amountCents)} />
-          <DetailRow label="Transfer reference" value={reference} />
+          <DetailRow label="Transfer reference" value={note} />
           <DetailRow label="Timestamp" value={formatTimestamp(reviewedAt)} />
         </dl>
       </div>
