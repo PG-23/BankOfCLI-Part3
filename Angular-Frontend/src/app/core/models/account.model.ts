@@ -1,3 +1,4 @@
+
 export type AccountType = 'CHECKING' | 'SAVINGS';
 
 export interface Account {
