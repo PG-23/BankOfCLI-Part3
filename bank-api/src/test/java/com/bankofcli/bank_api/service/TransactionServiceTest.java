@@ -37,7 +37,7 @@ class TransactionServiceTest {
     void setUp() {
         transactionRepo = mock(TransactionRepository.class);
         accountRepo = mock(AccountRepository.class);
-        service = new TransactionService(transactionRepo, accountRepo, mock(AccountService.class)); // deposit doesn't use AccountService
+        service = new TransactionService(transactionRepo, accountRepo, accountService);
 
         // Alice owns account 1000001234 with $100.00. Ids normally come from the database.
         User alice = new User("Alice", "Smith", "asmith1234", "alice@bank.com", "hash");

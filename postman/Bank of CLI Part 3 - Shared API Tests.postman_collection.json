@@ -1,11 +1,11 @@
 {
   "info": {
-    "_postman_id": "8ec05f88-b104-4cca-af72-a0ee799fb1c1",
-    "name": "Bank of CLI Part 3 | Shared API Tests",
+    "_postman_id": "989fba2f-8416-4540-92f3-fa7275c40c5c",
+    "name": "Bank of CLI Part 3 | Shared API Tests Copy",
     "description": "Team collection based on docs/api-contract.md in the Oct 20 ZIP. Import into Postman; set the loginPassword collection variable locally (demo: password1); run Login & save JWT; then run authenticated requests. Contract uses /auth/login, /accounts/me and /transactions/withdraw, while currently implemented HealthController uses /api/health. Ask the team whether to use a global /api prefix before changing apiPrefix. Several endpoints do not exist in the inspected snapshot: failed requests may reflect unfinished features, not collection errors. Only the successful withdrawal request mutates demo data. Do not export real tokens/passwords. Use Postman collection variables, not production credentials.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "38316417",
-    "_collection_link": "https://go.postman.co/collection/38316417-8ec05f88-b104-4cca-af72-a0ee799fb1c1?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/38316417-989fba2f-8416-4540-92f3-fa7275c40c5c?source=collection_link"
   },
   "item": [
     {
@@ -663,6 +663,9 @@
         },
         {
           "name": "Paginated Transaction History",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "method": "GET",
             "header": [],
@@ -676,7 +679,7 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}{{apiPrefix}}/transactions/paged?page=20&size=1",
+              "raw": "{{baseUrl}}{{apiPrefix}}/transactions/paged?page=1",
               "host": [
                 "{{baseUrl}}{{apiPrefix}}"
               ],
@@ -687,11 +690,51 @@
               "query": [
                 {
                   "key": "page",
-                  "value": "20"
-                },
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Paginated Transaction History With Filter",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}{{apiPrefix}}/transactions/paged?size=4&page=0&type=transfer",
+              "host": [
+                "{{baseUrl}}{{apiPrefix}}"
+              ],
+              "path": [
+                "transactions",
+                "paged"
+              ],
+              "query": [
                 {
                   "key": "size",
-                  "value": "1"
+                  "value": "4"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "type",
+                  "value": "transfer"
                 }
               ]
             }
@@ -1049,8 +1092,7 @@
       "description": "Paste a genuine expired token for the expiry scenario; a blank token only tests missing credentials"
     },
     {
-      "key": "auth_secret_0xme",
-      "secret": true
+      "key": "auth_secret_0xme"
     },
     {
       "key": "recipientAccount",
