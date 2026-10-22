@@ -31,7 +31,7 @@ export class Shell {
     const u = this.currentUser.user();
     return u ? `${u.firstName} ${u.lastName}` : '';
   });
-  readonly userId = computed(() => this.currentUser.user()?.id ?? '');
+  readonly userId = computed(() => this.currentUser.user()?.username ?? '');
   readonly userEmail = computed(() => this.currentUser.user()?.email ?? '');
 
   toggleSidebar(): void {

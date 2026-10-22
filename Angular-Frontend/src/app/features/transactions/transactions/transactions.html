@@ -46,10 +46,6 @@
             <small class="tx-error">Enter an amount greater than 0 with up to 2 decimals.</small>
           }
         </label>
-        <label class="tx-field">
-          <span>Message (optional)</span>
-          <textarea rows="3" formControlName="description"></textarea>
-        </label>
         <button type="submit" class="tx-submit" [disabled]="loading()">{{ loading() ? 'Processing...' : 'Deposit' }}</button>
       </form>
     }
@@ -62,10 +58,6 @@
           @if (withdrawForm.controls.amount.touched && withdrawForm.controls.amount.invalid) {
             <small class="tx-error">Enter an amount greater than 0 with up to 2 decimals.</small>
           }
-        </label>
-        <label class="tx-field">
-          <span>Message (optional)</span>
-          <textarea rows="3" formControlName="description"></textarea>
         </label>
         <button type="submit" class="tx-submit" [disabled]="loading()">{{ loading() ? 'Processing...' : 'Withdraw' }}</button>
       </form>
