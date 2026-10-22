@@ -26,6 +26,6 @@ export async function getTransactionsFromId(
 
     return {
         transactions: response.content,
-        totalPages: response.totalPages
+        totalPages: response.totalPages,
     };
 }

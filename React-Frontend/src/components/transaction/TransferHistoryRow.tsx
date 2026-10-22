@@ -47,8 +47,13 @@ function TransferHistoryRow({
                             />
                             <span className="ml-2">
                                 {inToAccount
-                                    ? `Transfer from account ${transaction.fromAccountNumber}`
-                                    : `Transfer to account ${transaction.toAccountNumber}`}
+                                    ? (transaction.note !== null 
+                                        ?(`${transaction.note} made by ${transaction.counterpartyName}`)
+                                        :(`Transfer from account ${transaction.fromAccountNumber})`))
+                                    : (transaction.note !== null 
+                                        ?(`${transaction.note} made to ${transaction.counterpartyName}`)
+                                        :(`Transfer to account ${transaction.fromAccountNumber})`))
+                                }
                             </span>
                         </>
                     ) : null}

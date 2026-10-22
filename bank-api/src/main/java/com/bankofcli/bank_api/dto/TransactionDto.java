@@ -17,6 +17,7 @@ public class TransactionDto {
     private final String toAccountNumber;
     private final String timestamp;
     private final String note;
+    private String counterpartyName = null;
 
     public TransactionDto(String id,String type,long amountCents,String fromAccountNumber,String toAccountNumber,String timestamp,String note){
         this.id=id;
@@ -80,4 +81,11 @@ public class TransactionDto {
         return note;
     }
 
+    public String getCounterpartyName(){
+        return counterpartyName;
+    }
+
+    public void setCounterpartyName(String counterpartyName){
+        this.counterpartyName = counterpartyName;
+    }
 }
