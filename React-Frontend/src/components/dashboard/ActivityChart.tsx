@@ -19,7 +19,7 @@ export function ActivityChart() {
   // Load this account's transactions once, then group them by day
   useEffect(() => {
     if (!account) return;
-    getAccountActivity(account.accountNumber).then(transactions => {
+    getAccountActivity(DAYS).then(transactions => {
       setData(groupByDay(transactions, account.accountNumber, DAYS));
     });
   }, [account]);
