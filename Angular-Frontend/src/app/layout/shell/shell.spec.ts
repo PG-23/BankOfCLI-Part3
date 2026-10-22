@@ -1,38 +1,30 @@
-import { Component, HostListener, computed, inject, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { Navbar } from '../navbar/navbar';
-import { Sidebar } from '../sidebar/sidebar';
-import { Toast } from '../../shared/ui/toast/toast';
-import { CurrentUserService } from '../../core/services/current.user.services';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { provideRouter } from "@angular/router";
+import { Shell } from './shell';
 
-@Component({
-  selector: 'app-shell',
-  imports: [Navbar, Sidebar, RouterOutlet, Toast],
-  templateUrl: './shell.html',
-  styleUrl: './shell.css',
-})
-export class Shell {
-  private currentUser = inject(CurrentUserService);
+describe('Shell', () => {
+  let component: Shell;
+  let fixture: ComponentFixture<Shell>;
 
-  readonly sidebarOpen = signal(false); // starts closed, like the Figma
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [Shell],
+      providers: [provideRouter([])],
+    }).compileComponents();
 
-  // NOTE: adjust `.user()` to whatever Gbolahan's CurrentUserService exposes
-  readonly userName = computed(() => {
-    const u = this.currentUser.user();
-    return u ? `${u.firstName} ${u.lastName}` : '';
+    fixture = TestBed.createComponent(Shell);
+    component = fixture.componentInstance;
+    await fixture.whenStable();
   });
-  readonly userId = computed(() => this.currentUser.user()?.id ?? '');
 
-  toggleSidebar(): void {
-    this.sidebarOpen.update((open) => !open);
-  }
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-  closeSidebar(): void {
-    this.sidebarOpen.set(false);
-  }
-
-  @HostListener('document:keydown.escape')
-  onEscape(): void {
-    this.closeSidebar();
-  }
-}
+  it('opens and closes the sidebar', () => {
+    component.toggleSidebar();
+    expect(component.sidebarOpen()).toBe(true);
+    component.closeSidebar();
+    expect(component.sidebarOpen()).toBe(false);
+  });
+});

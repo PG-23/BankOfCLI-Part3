@@ -1,4 +1,3 @@
-
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
@@ -7,6 +6,7 @@ import {
   Account,
   ApiResponse,
   BackendAccount,
+  BackendRecipient,
   BackendTransaction,
   BackendTransactionResponse,
   DepositRequest,
@@ -66,11 +66,35 @@ export class TransactionService {
     );
   }
 
-  getRecipients(accountId: string): Observable<ApiResponse<Recipient[]>> {
-    // The backend does not currently provide a saved-recipient list.
-    // Users can still enter an account number for a transfer.
-    void accountId;
-    return of({ success: true, data: [] });
+  lookupRecipient(accountNumber: string): Observable<ApiResponse<Recipient>> {
+    return toApiResponse(
+      this.http
+        .get<BackendRecipient>(`${this.baseUrl}/accounts/${accountNumber}`)
+        .pipe(map((r): Recipient => ({ id: r.accountNumber, ...r }))),
+    );
+  }
+
+  // the backend has no saved recipient list, so build one from the
+  // people this user sent money to most recently (newest first, max 5)
+  getRecipients(transactions: Transaction[]): Observable<ApiResponse<Recipient[]>> {
+    const accountNumbers = [
+      ...new Set(
+        transactions
+          .filter((t) => t.type === 'TRANSFER_OUT' && t.relatedAccountNumber)
+          .map((t) => t.relatedAccountNumber!),
+      ),
+    ].slice(0, 5);
+
+    if (accountNumbers.length === 0) {
+      return of({ success: true, data: [] });
+    }
+
+    return forkJoin(accountNumbers.map((n) => this.lookupRecipient(n))).pipe(
+      map((results) => ({
+        success: true,
+        data: results.filter((r) => r.success && r.data).map((r) => r.data!),
+      })),
+    );
   }
 
   // ---------- TRANSACTION HISTORY ----------

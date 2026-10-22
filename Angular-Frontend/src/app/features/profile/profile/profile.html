@@ -10,7 +10,7 @@
       </svg>
       <div class="profile__name">
         <strong>{{ fullName() }}</strong>
-        <span>{{ user()?.id }}</span>
+        <span>{{ user()?.username }}</span>
       </div>
     </div>
 
@@ -66,8 +66,8 @@
       </fieldset>
 
       <label class="field">
-        <span>ID</span>
-        <input type="text" [value]="user()?.id ?? ''" readonly aria-readonly="true" class="field__readonly" />
+        <span>Username</span>
+        <input type="text" [value]="user()?.username ?? ''" readonly aria-readonly="true" class="field__readonly" />
       </label>
 
       <button type="submit" class="save" [disabled]="saving()">
