@@ -14,19 +14,29 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bankofcli.bank_api.dto.ActivityResponse;
-import com.bankofcli.bank_api.dto.DepositRequest;
+import com.bankofcli.bank_api.dto.TransactionDto;
 import com.bankofcli.bank_api.dto.TransactionResponse;
 import com.bankofcli.bank_api.dto.TransferRequest;
+import com.bankofcli.bank_api.service.TransactionService;
+import com.bankofcli.bank_api.dto.ActivityResponse;
+import com.bankofcli.bank_api.dto.DepositRequest;
 import com.bankofcli.bank_api.dto.WithdrawRequest;
 
 import com.bankofcli.bank_api.security.CurrentUser;
 import com.bankofcli.bank_api.service.ActivityService;
-import com.bankofcli.bank_api.service.TransactionService;
 import com.bankofcli.bank_api.service.TransferService;
 import com.bankofcli.bank_api.service.WithdrawalService;
 
 import jakarta.validation.Valid;
+
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 @RestController
 @RequestMapping("/transactions")
@@ -70,6 +80,24 @@ public class TransactionController {
 
         // Call the transfer service
         return transferService.transfer(userId, request);
+    }
+    
+    // Angular Transaction
+    @GetMapping("")
+    public List<TransactionDto> getAllTransactions(@AuthenticationPrincipal Jwt jwt) {
+        long accountId = Long.parseLong(jwt.getSubject());
+        return transactionService.getAllTransactions(accountId);
+    }
+    
+    // React Endpoint
+    @GetMapping("/paged")
+    public Page<TransactionDto> getPagedTransactions(@AuthenticationPrincipal Jwt jwt, @PageableDefault(
+        size = 5,
+        sort = "timestamp",
+        direction = Sort.Direction.DESC
+    ) Pageable pageable) {
+        long userId = Long.parseLong(jwt.getSubject());
+        return transactionService.getAllTransactionPaginated(userId, pageable);
     }
 
     // ==========================================

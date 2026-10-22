@@ -11,9 +11,8 @@ export const authGuard: CanActivateFn = () => {
     return true;
   }
 
-  const currentUser = authService.getCurrentUser();
-
-  if (currentUser) {
+  // logged in = we have a token from backend
+  if (authService.isLoggedIn()) {
     return true;
   }
 
