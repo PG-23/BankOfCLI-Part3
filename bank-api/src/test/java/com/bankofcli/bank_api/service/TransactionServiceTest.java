@@ -30,6 +30,7 @@ class TransactionServiceTest {
     private TransactionRepository transactionRepo;
     private AccountRepository accountRepo;
     private TransactionService service;
+    private AccountService accountService;
     private Account aliceAccount;
 
     @BeforeEach

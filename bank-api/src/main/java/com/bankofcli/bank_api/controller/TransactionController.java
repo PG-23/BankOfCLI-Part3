@@ -90,7 +90,7 @@ public class TransactionController {
     }
     
     // React Endpoint
-    @GetMapping("/transactions/paged")
+    @GetMapping("/paged")
     public Page<TransactionDto> getPagedTransactions(@AuthenticationPrincipal Jwt jwt, @PageableDefault(
         size = 5,
         sort = "timestamp",
