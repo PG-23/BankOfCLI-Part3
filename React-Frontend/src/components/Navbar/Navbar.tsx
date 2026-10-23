@@ -70,7 +70,7 @@ function Navbar() {
       </div>
 
       {/* CENTER: buttons that scroll to containers */}
-      <div className="flex items-center gap-1">
+      <div className="hidden lg:flex items-center gap-1">
         {SECTIONS.map(section => {
           const isActive = activeId === section.id;
           return (

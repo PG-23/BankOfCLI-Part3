@@ -19,13 +19,18 @@
     border: 1px solid var(--color-border);
     border-radius: 8px;
     align-items: stretch;
+    overflow: auto  ;
 }
 
 /************************************
 *           Table Format            *
 ************************************/
+.tableContainer {
+    overflow: auto;
+}
+
 table {
-    width: 100%;
+    min-width: 1000px;
     border-collapse: collapse;
     table-layout: fixed;
 }

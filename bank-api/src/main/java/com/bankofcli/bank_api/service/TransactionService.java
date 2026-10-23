@@ -85,10 +85,10 @@ public class TransactionService {
 
             if(transaction.getType() == TransactionType.TRANSFER){
                 if(accountId == transaction.getToAccount().getId()){
-                    dto.setCounterpartyName(transaction.getFromAccount().getUser().getFirstName() + " " + transaction.getToAccount().getUser().getLastName());
+                    dto.setCounterpartyName(transaction.getFromAccount().getUser().getFirstName() + " " + transaction.getFromAccount().getUser().getLastName());
                 }
                 else{
-                    dto.setCounterpartyName(transaction.getToAccount().getUser().getFirstName() + " " + transaction.getFromAccount().getUser().getLastName());
+                    dto.setCounterpartyName(transaction.getToAccount().getUser().getFirstName() + " " + transaction.getToAccount().getUser().getLastName());
                 }
             }
 
