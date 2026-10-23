@@ -8,6 +8,7 @@ export interface Transaction {
   toAccountNumber: string | null;   // null for withdrawals
   note?: string | null;             // transfer only (shown as "Reference")
   timestamp: string;                // ISO 8601
+  counterpartyName: string | null;
 }
 
 export interface DepositRequest {
