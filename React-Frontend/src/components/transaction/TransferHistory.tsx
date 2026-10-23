@@ -88,83 +88,85 @@ function TransferHistory() {
                 </div>
 
                 {/* Table for displaying transaction history */}
-                <table aria-busy={loading}>
-                    <thead>
-                        <tr>
-                            <th className="text-base first-column">
-                                Transaction
-                            </th>
-                            <th className="text-base text-align-right">Date</th>
-                            <th className="text-base mid-column">Type</th>
-                            <th className="text-base text-align-left">
-                                Amount
-                            </th>
-                        </tr>
-                    </thead>
-
-                    {/* Table content */}
-                    <tbody>
-                        {loading ? (
-                            /* Skeleton rows while loading */
-                            <>
-                                {Array.from({ length: PAGE_SIZE }).map(
-                                    (_, i) => (
-                                        <tr key={`loading-${i}`}>
-                                            <td
-                                                colSpan={4}
-                                                className="loading-cell"
-                                            >
-                                                <Skeleton className="h-5 w-full" />
-                                            </td>
-                                        </tr>
-                                    ),
-                                )}
-                            </>
-                        ) : transactions?.length === 0 ? (
-                            /* Empty state */
+                <div className="tableContainer">
+                    <table aria-busy={loading}>
+                        <thead>
                             <tr>
-                                <td
-                                    colSpan={4}
-                                    className="py-8 text-center text-text-muted"
-                                >
-                                    {filter === "all"
-                                        ? "No transactions yet."
-                                        : "No transactions of this type."}
-                                </td>
+                                <th className="text-base first-column">
+                                    Transaction
+                                </th>
+                                <th className="text-base text-align-right">Date</th>
+                                <th className="text-base mid-column">Type</th>
+                                <th className="text-base text-align-left">
+                                    Amount
+                                </th>
                             </tr>
-                        ) : (
-                            <>
-                                {/* Transaction rows */}
-                                {transactions.map((item) => (
-                                    <TransferHistoryRow
-                                        key={item.id}
-                                        transaction={item}
-                                        accountId={accountNumber!}
-                                    />
-                                ))}
+                        </thead>
 
-                                {/* Filler rows keep the table height steady on the last page */}
-                                {Array.from({
-                                    length: Math.max(
-                                        0,
-                                        PAGE_SIZE - transactions.length,
-                                    ),
-                                }).map((_, i) => (
-                                    <tr
-                                        key={`empty-${i}`}
-                                        className="empty-row"
-                                        aria-hidden="true"
+                        {/* Table content */}
+                        <tbody>
+                            {loading ? (
+                                /* Skeleton rows while loading */
+                                <>
+                                    {Array.from({ length: PAGE_SIZE }).map(
+                                        (_, i) => (
+                                            <tr key={`loading-${i}`}>
+                                                <td
+                                                    colSpan={4}
+                                                    className="loading-cell"
+                                                >
+                                                    <Skeleton className="h-5 w-full" />
+                                                </td>
+                                            </tr>
+                                        ),
+                                    )}
+                                </>
+                            ) : transactions?.length === 0 ? (
+                                /* Empty state */
+                                <tr>
+                                    <td
+                                        colSpan={4}
+                                        className="py-8 text-center text-text-muted"
                                     >
-                                        <td>&nbsp;</td>
-                                        <td>&nbsp;</td>
-                                        <td>&nbsp;</td>
-                                        <td>&nbsp;</td>
-                                    </tr>
-                                ))}
-                            </>
-                        )}
-                    </tbody>
-                </table>
+                                        {filter === "all"
+                                            ? "No transactions yet."
+                                            : "No transactions of this type."}
+                                    </td>
+                                </tr>
+                            ) : (
+                                <>
+                                    {/* Transaction rows */}
+                                    {transactions.map((item) => (
+                                        <TransferHistoryRow
+                                            key={item.id}
+                                            transaction={item}
+                                            accountId={accountNumber!}
+                                        />
+                                    ))}
+
+                                    {/* Filler rows keep the table height steady on the last page */}
+                                    {Array.from({
+                                        length: Math.max(
+                                            0,
+                                            PAGE_SIZE - transactions.length,
+                                        ),
+                                    }).map((_, i) => (
+                                        <tr
+                                            key={`empty-${i}`}
+                                            className="empty-row"
+                                            aria-hidden="true"
+                                        >
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                    ))}
+                                </>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
 
                 {/* Page Buttons */}
                 <div className="pagination">
