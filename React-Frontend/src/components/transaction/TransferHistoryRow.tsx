@@ -19,6 +19,11 @@ function TransferHistoryRow({
     const inToAccount =
         transaction.toAccountNumber === accountId ? true : false;
 
+    // Fall back to the other account's number if the API didn't send a name
+    const counterparty =
+        transaction.counterpartyName ??
+        `account ${inToAccount ? transaction.fromAccountNumber : transaction.toAccountNumber}`;
+
     const date = new Date(transaction.timestamp);
 
     return (
@@ -47,12 +52,12 @@ function TransferHistoryRow({
                             />
                             <span className="ml-2">
                                 {inToAccount
-                                    ? (transaction.note !== null 
-                                        ?(`${transaction.note} made by ${transaction.counterpartyName}`)
-                                        :(`Transfer from account ${transaction.fromAccountNumber})`))
-                                    : (transaction.note !== null 
-                                        ?(`${transaction.note} made to ${transaction.counterpartyName}`)
-                                        :(`Transfer to account ${transaction.fromAccountNumber})`))
+                                    ? (transaction.note
+                                        ?(`${transaction.note} made by ${counterparty}`)
+                                        :(`Transfer from account ${transaction.fromAccountNumber}`))
+                                    : (transaction.note
+                                        ?(`${transaction.note} made to ${counterparty}`)
+                                        :(`Transfer to account ${transaction.toAccountNumber}`))
                                 }
                             </span>
                         </>
